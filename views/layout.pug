@@ -1,7 +1,16 @@
 doctype html
 html
   head
-    title= title
+    title= `SP Athletics`
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    nav
+      a(href='/'): div.home-btn: h1 SP ATHLETICS
+      ul
+        li 
+          a(href='/athletes'): button Athletes
+        li
+          a(href='/sports'): button Sports
+        li
+          a(href='/staff'): button Staff      
     block content
