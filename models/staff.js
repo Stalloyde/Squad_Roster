@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const Staff = new Schema({
+const StaffSchema = new Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   sport: { type: mongoose.Schema.Types.ObjectId, ref: 'Sport', required: true },
@@ -10,10 +10,10 @@ const Staff = new Schema({
   bio: { type: String, required: true },
 });
 
-Staff.virtual('fullName').get(function () {
+StaffSchema.virtual('fullName').get(function () {
   return `${this.lastName}, ${this.firstName}`;
 });
 
-Staff.virtual('url').get(() => `/staff/${this._id}`);
+StaffSchema.virtual('url').get(() => `/staff/${this._id}`);
 
-module.exports = mongoose.model('Staff', Staff);
+module.exports = mongoose.model('Staff', StaffSchema);
