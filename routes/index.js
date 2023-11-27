@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 mongoose.set('strictQuery', false);
 const router = express.Router();
-const mongoDB = `mongodb+srv://${process.env.USER_NAME}:${process.env.PASSWORD}@${process.env.CLUSTER}.uqtjxjp.mongodb.net/?retryWrites=true&w=majority`;
+const mongoDB = `mongodb+srv://${process.env.USER_NAME}:${process.env.PASSWORD}@${process.env.COLLECTION}.uqtjxjp.mongodb.net/${process.env.COLLECTION}?retryWrites=true&w=majority`;
 
 async function main() {
   await mongoose.connect(mongoDB);
