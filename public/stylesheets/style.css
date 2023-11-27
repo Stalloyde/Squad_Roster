@@ -6,14 +6,32 @@
 }
 
 body {
+  background-color: rgb(238, 224, 205);
+  height: 100vh;
+}
+
+footer {
+  background-color: rgb(250, 248, 245);
   padding: 1em;
-  margin: 1em;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  box-shadow: 0px 1px 5px rgb(20, 63, 31);
 }
 
 nav {
   font-size: x-large;
   display:flex;
-  padding: 0 1em;
+  padding: 1em;
+  background-color: rgb(250, 248, 245);
+  box-shadow: 0px 1px 5px rgb(20, 63, 31);
+}
+
+.logo {
+  position: absolute;
+  right: 1em;
+  top: 0.3em;   
 }
 
 .home-btn {
@@ -38,9 +56,43 @@ button {
   width: 100px;
   border: none;
   font-weight: bold;
+  background-color: rgb(20, 63, 31);
+  color: white;
 }
 
 button:hover, .home-btn:hover {
   cursor: pointer;
-  color: blue;
+  color:gold;
 }
+
+main {
+  padding: 2em;
+  margin: 2em;
+}
+
+.homepage {
+  margin: 2em;
+}
+
+.content-container {
+  display:flex;
+  justify-content: space-around;
+  padding: 3em;
+}
+
+.content {
+  display:flex;
+  background-color: rgb(20, 63, 31);
+  color: white;
+  align-items: baseline;
+  padding: 0.5em;
+  width: 180px;
+  border-radius: 10px;
+  justify-content: center;
+}
+
+.number {
+  font-size: 70px;
+  padding: 0.1em;
+}
+

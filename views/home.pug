@@ -1,4 +1,24 @@
 extends layout
 
 block content
-  p Home Page
+  main
+    h2 Welcome to SP Athletics' database site. This site contains information of all our athletes, sports and staff.  
+    br  
+    p #[em Administrators can add, update or delete any information using the admin password when prompted.]
+    br
+    hr
+    br
+    section.homepage
+      h3 SP Athletics, by the numbers:
+      div.content-container 
+        div.content
+          .number #[strong #{athleteCount}]
+          | athletes 
+        div.content
+          .number #[strong #{staffCount}]
+          | coaching staff
+        div.content
+          .number #[strong #{sportCount}]
+          | sports
+    
+    
