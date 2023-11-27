@@ -1,5 +1,8 @@
 #! /usr/bin/env node
 const mongoose = require('mongoose');
+const Athlete = require('./models/athlete');
+const Sport = require('./models/sport');
+const Staff = require('./models/staff');
 
 console.log(
   'This script populates the database',
@@ -14,22 +17,41 @@ async function main() {
   console.log('Connecting to DB');
   await mongoose.connect(mongoDB);
   console.log('Connected to DB');
-  await createAthletes();
-  await createSports();
-  await createStaff();
-  console.log('DB Populated');
+  await Promise.all([
+    createSports(),
+    createAthletes(),
+    createStaff(),
+  ]);
+  console.log('DB Populated. Closing DB connection');
   mongoose.connection.close();
+  console.log('DB disconnected');
 }
 
 main().catch((err) => console.log(err));
 
-const Athlete = require('./models/athlete');
-const Sport = require('./models/sport');
-const Staff = require('./models/staff');
-
-const athletesArray = [];
 const sportArray = [];
+const athletesArray = [];
 const staffArray = [];
+
+async function newSport(index, name) {
+  const sport = new Sport({
+    index,
+    name,
+  });
+  sportArray[index] = sport;
+  await sport.save();
+}
+
+async function createSports() {
+  console.log('Creating sports');
+
+  await Promise.all([
+    newSport(0, 'Swimming'),
+    newSport(1, 'Basketball'),
+  ]);
+
+  console.log('Sports created');
+}
 
 async function newAthlete(index, firstName, lastName, sex, height, weight, sport, dateOfBirth) {
   const athlete = new Athlete({
@@ -86,53 +108,28 @@ async function createAthletes() {
   console.log('Athletes created');
 }
 
-async function newSport(index, name, athletes, staff) {
-  const sport = new Sport({
-    index,
-    name,
-    athletes,
-    staff,
-  });
-  sportArray[index] = sport;
-  await sport.save();
-}
-
-async function createSports() {
-  console.log('Creating sports');
-
-  const swimAthletes = athletesArray.filter((athlete) => athlete.sport === 'Swimming');
-  const swimStaff = staffArray.filter((staff) => staff.sport === 'Swimming');
-  const basketballAthletes = athletesArray.filter((athlete) => athlete.sport === 'Basketball');
-  const basketballStaff = staffArray.filter((staff) => staff.sport === 'Basketball');
-
-  await Promise.all([newSport(1, 'Swimming', swimAthletes, swimStaff),
-    newSport(2, 'Basketball', basketballAthletes, basketballStaff),
-  ]);
-
-  console.log('Sports created');
-}
-
-async function newStaff(firstName, lastName, sport, designation, bio) {
+async function newStaff(index, firstName, lastName, designation, sport, bio) {
   const staff = new Staff({
+    index,
     firstName,
     lastName,
-    sport,
     designation,
+    sport,
     bio,
   });
+  staffArray[index] = staff;
   await staff.save();
 }
 
 async function createStaff() {
   console.log('Creating Staff');
-  const newStaffs = await Promise.all([
-    newStaff('Thomas', 'Clung', 'Swimming', 'Head Coach', 'Fake bio for Thomas Clung, Head Coach since 2004. Lead the swim team to numerous state titles and National top 10 rankings.'),
-    newStaff('Jefferson', 'Howard', 'Swimming', 'Assistant Head Coach', 'Started his career as a swim teacher and accumulated experience throughout his 20 year career.'),
-    newStaff('Mandy', 'Jensen', 'Swimming', 'Assistant Coach', 'Swam for the team for 10 years.'),
-    newStaff('Mia', 'Richards', 'Basketball', 'Head Coach', 'Turned to a coaching career since retiring from the WNBA in 2010. A great teacher and strong disciplinary, players rallying behind her leadership during difficult games are a common sight'),
-    newStaff('Kurt', 'SkyWalker', 'Basketball', 'Assistant Head Coach', 'The newest member of the Basketball coaching staff. Highly versatile in offensive and defensive schemes, as well as the key person in planning and delivering strength and conditioning.'),
-    newStaff('Lea', 'Cobin', 'Basketball', 'Assistant Coach', 'From a volunteer coach during the 2020-21 and 2021-22 season, she now leads the nutrition program.'),
+  await Promise.all([
+    newStaff(0, 'Thomas', 'Clung', 'Head Coach', sportArray[0], 'Fake bio for Thomas Clung, Head Coach since 2004. Lead the swim team to numerous state titles and National top 10 rankings.'),
+    newStaff(1, 'Jefferson', 'Howard', 'Assistant Head Coach', sportArray[0], 'Started his career as a swim teacher and accumulated experience throughout his 20 year career.'),
+    newStaff(2, 'Mandy', 'Jensen', 'Assistant Coach', sportArray[0], 'Swam for the team for 10 years.'),
+    newStaff(3, 'Mia', 'Richards', 'Head Coach', sportArray[1], 'Turned to a coaching career since retiring from the WNBA in 2010. A great teacher and strong disciplinary, players rallying behind her leadership during difficult games are a common sight'),
+    newStaff(4, 'Kurt', 'SkyWalker', 'Assistant Head Coach', sportArray[1], 'The newest member of the Basketball coaching staff. Highly versatile in offensive and defensive schemes, as well as the key person in planning and delivering strength and conditioning.'),
+    newStaff(5, 'Lea', 'Cobin', 'Assistant Coach', sportArray[1], 'From a volunteer coach during the 2020-21 and 2021-22 season, she now leads the nutrition program.'),
   ]);
-  newStaffs.map((staff) => staffArray.push(staff));
   console.log('Staff created');
 }
