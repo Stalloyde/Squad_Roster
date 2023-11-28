@@ -5,15 +5,16 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     nav
-      a(href='/'): div.home-btn: h1 SP ATHLETICS
+      a.nav-link(href='/'): div.home-btn: h1 SP ATHLETICS
       ul
         li 
-          a(href='/athletes'): button ATHLETES
+          a.nav-link(href='/athletes'): button ATHLETES
         li
-          a(href='/sports'): button SPORTS
+          a.nav-link(href='/sports'): button SPORTS
         li
-          a(href='/staff'): button STAFF    
-    img.logo(src='/images/SP-Athletics.png' width='90')
+          a.nav-link(href='/staff'): button STAFF    
+      div.logo
+        img(src='/images/SP-Athletics.png' width='100')
     block content
-    footer
-      | #[em Created by Ethan Chan @ 2023]
+  footer
+    | #[em Created by Ethan Chan @ 2023]
