@@ -7,46 +7,46 @@
 
 body {
   background-color: rgb(238, 224, 205);
-  height: 100vh;
-}
+} 
 
 footer {
   background-color: rgb(250, 248, 245);
   padding: 1em;
   width: 100%;
   text-align: center;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   box-shadow: 0px 1px 5px rgb(20, 63, 31);
 }
 
 nav {
   font-size: x-large;
+  align-items: center;
   display:flex;
-  padding: 1em;
+  padding: 0 1em;
   background-color: rgb(250, 248, 245);
   box-shadow: 0px 1px 5px rgb(20, 63, 31);
 }
 
-.logo {
-  position: absolute;
-  right: 1em;
-  top: 0.3em;   
-}
-
 .home-btn {
-  height: 50px;
   display: flex;
   align-items: center;
+  height: 50px;
 }
 
 nav > ul {
-  list-style: none;
   display: flex;
+  align-items: center;
+  list-style: none;
   padding: 0 1em;
+  flex-grow: 1;
 }
 
-a {
+.logo {
+  display: flex;
+}
+
+.nav-link {
   text-decoration: none;
   color: black;
 }
@@ -68,6 +68,8 @@ button:hover, .home-btn:hover {
 main {
   padding: 2em;
   margin: 2em;
+  max-height: 80vh;
+  overflow-y:auto;
 }
 
 .homepage {
@@ -94,5 +96,19 @@ main {
 .number {
   font-size: 70px;
   padding: 0.1em;
+}
+
+table {
+  margin: 1em auto;
+  width: 60%;
+}
+
+.align-center {
+  text-align: center;
+}
+
+th {
+  padding: 0.5em;
+  border-bottom: 1px solid black;
 }
 

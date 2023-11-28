@@ -1,10 +1,8 @@
 const express = require('express');
+const athletesController = require('../controller/athletesController');
 
 const router = express.Router();
 
-/* GET users listing. */
-router.get('/', (req, res, next) => {
-  res.render('athletes');
-});
+router.get('/', athletesController.athletesDirectory);
 
 module.exports = router;
