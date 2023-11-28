@@ -22,7 +22,7 @@ AthleteSchema.virtual('url').get(function () {
 });
 
 AthleteSchema.virtual('dateOfBirthFormatted').get(function () {
-  return this.dateOfBirth.toLocaleString(DateTime.DATETIME_MED);
+  return DateTime.fromJSDate(this.dateOfBirth).toLocaleString(DateTime.DATE_MED);
 });
 
 module.exports = mongoose.model('Athlete', AthleteSchema);
