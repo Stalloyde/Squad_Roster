@@ -18,7 +18,7 @@ AthleteSchema.virtual('fullName').get(function () {
 });
 
 AthleteSchema.virtual('url').get(function () {
-  return `/athlete/${this._id}`;
+  return `/athletes/${this._id}`;
 });
 
 AthleteSchema.virtual('dateOfBirthFormatted').get(function () {
