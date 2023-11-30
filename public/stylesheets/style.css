@@ -83,6 +83,7 @@ main {
 .content-header {
   display: flex;
   align-items: center;
+  height: 60px;
 }
 
 .content-header > h2 {
@@ -153,7 +154,6 @@ th {
 .avatar {
   background-color: white;
 }
-
 
 .athlete-details > div {
   display: flex;
