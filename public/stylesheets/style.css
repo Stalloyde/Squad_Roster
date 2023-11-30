@@ -51,6 +51,14 @@ nav > ul {
   color: black;
 }
 
+a:visited {
+  color: blue;
+}
+
+a:hover {
+  color:goldenrod;
+}
+
 button {
   height: 50px;
   width: 100px;
@@ -62,7 +70,7 @@ button {
 
 button:hover, .home-btn:hover {
   cursor: pointer;
-  color:gold;
+  color:goldenrod;
 }
 
 main {
@@ -70,6 +78,15 @@ main {
   margin: 2em;
   max-height: 80vh;
   overflow-y:auto;
+}
+
+.content-header {
+  display: flex;
+  align-items: center;
+}
+
+.content-header > h2 {
+  flex-grow: 1;
 }
 
 .homepage {
@@ -100,7 +117,7 @@ main {
 
 table {
   margin: 1em auto;
-  width: 60%;
+  width: max-content;
 }
 
 .align-center {
@@ -112,3 +129,53 @@ th {
   border-bottom: 1px solid black;
 }
 
+.athlete-details-container {
+  margin: 5em;
+}
+
+.details-container {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-holder {
+  border: 1px solid black;
+  height: 320px;
+  width: 300px;
+  margin: 1em;  
+  padding: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar {
+  background-color: white;
+}
+
+
+.athlete-details > div {
+  display: flex;
+  padding: 1em;
+}
+
+.label {
+  width: 110px;
+}
+
+.crud-btn-container {
+  display: flex;
+  justify-content: space-around;
+  width: 30%;
+  margin: 0 auto;
+  padding: 1em;
+}
+
+.crud-btn {
+  border-radius: 10px;
+}
+
+.del-btn {
+  background-color: rgb(163, 41, 41);
+}
