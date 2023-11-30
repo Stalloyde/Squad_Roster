@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+  main.athlete-details-container
+    section.details-container
+      div.img-holder
+        if athlete.img
+          | insert athlete image here
+        else 
+          img.avatar(src='/images/avatar.png')
+      div.athlete-details
+        div 
+          div.label #[strong Name]  
+          div : #{athlete.fullName}
+        div 
+          div.label #[strong Sex]  
+          div : #{athlete.sex}
+        div 
+          div.label #[strong Height] 
+          div : #{athlete.height}cm
+        div 
+          div.label #[strong Weight] 
+          div : #{athlete.weight}kg
+        div 
+          div.label #[strong Sport] 
+          div
+            span : 
+              a(href=athlete.sport.url) #{athlete.sport.name}
+        div 
+          div.label #[strong Date of Birth:] 
+          div : #{athlete.dateOfBirthFormatted}
+    div.crud-btn-container
+      button.crud-btn EDIT PROFILE
+      button.del-btn.crud-btn DELETE PROFILE
