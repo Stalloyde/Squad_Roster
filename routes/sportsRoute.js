@@ -1,10 +1,9 @@
 const express = require('express');
+const sportsController = require('../controller/sportsController');
 
 const router = express.Router();
 
-/* GET users listing. */
-router.get('/', (req, res, next) => {
-  res.render('sports');
-});
+router.get('/', sportsController.sportsDirectory);
+router.get('/:sportName', sportsController.sportDetails);
 
 module.exports = router;

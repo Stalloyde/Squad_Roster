@@ -1,0 +1,29 @@
+extends ../layout
+
+block content
+  main
+    h2 #{sport.name} Team Directory
+    br
+    hr
+    section.athlete-page 
+      table
+        tr
+          th #
+          th Name
+          th Sex 
+          th Height (cm) 
+          th Weight (kg) 
+          th Sport 
+          th Date of Birth
+        for athlete,index in athletes 
+          tr
+            td.align-center #{index+1}
+            td: a(href=athlete.url) #{athlete.fullName}
+            td.align-center #{athlete.sex}
+            td.align-center #{athlete.height}
+            td.align-center #{athlete.weight}
+            td.align-center #{athlete.sport.name}
+            td.align-center #{athlete.dateOfBirthFormatted}
+      div.crud-btn-container
+        button.crud-btn EDIT SPORT
+        button.del-btn.crud-btn DELETE SPORT

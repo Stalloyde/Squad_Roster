@@ -1,0 +1,18 @@
+extends ../layout
+
+block content
+  main
+    div.content-header
+      h2 Sports' Directory
+      button.crud-btn NEW SPORT
+    br
+    hr
+    section.sports-page 
+      table
+        tr
+          th #
+          th Sport
+        for sport,index in sports
+          tr
+            td.align-center #{index+1}
+            td.align-center: a(href=sport.url) #{sport.name}
