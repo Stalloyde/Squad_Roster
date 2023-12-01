@@ -14,6 +14,8 @@ StaffSchema.virtual('fullName').get(function () {
   return `${this.lastName}, ${this.firstName}`;
 });
 
-StaffSchema.virtual('url').get(() => `/staff/${this._id}`);
+StaffSchema.virtual('url').get(function () {
+  return `/staff/${this._id}`;
+});
 
 module.exports = mongoose.model('Staff', StaffSchema);
