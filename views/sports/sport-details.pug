@@ -4,9 +4,14 @@ block content
   main
     div.content-header
       h2 #{sport.name} Team Directory
+      div.crud-btn-container
+        button.crud-btn EDIT SPORT
+        button.del-btn.crud-btn DELETE SPORT
     br
     hr
+    br
     section
+      h3 ATHLETES
       table
         tr
           th #
@@ -25,6 +30,19 @@ block content
             td.align-center #{athlete.weight}
             td.align-center #{athlete.sport.name}
             td.align-center #{athlete.dateOfBirthFormatted}
-      div.crud-btn-container
-        button.crud-btn EDIT SPORT
-        button.del-btn.crud-btn DELETE SPORT
+      hr
+      br
+      h3 STAFF
+      table
+        tr
+          th #
+          th Name
+          th Sport 
+          th Designation
+        for staff,index in staffList 
+          tr
+            td.align-center #{index+1}
+            td: a(href=staff.url) #{staff.fullName}
+            td.align-center: a(href=staff.sport.url) #{staff.sport.name}
+            td #{staff.designation}
+
