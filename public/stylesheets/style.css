@@ -166,7 +166,7 @@ td {
 .athlete-details > div, .staff-details > div {
   display: flex;
   padding: 1em;
-  max-width: 800px;
+  max-width: 600px;
 }
 
 .label {
