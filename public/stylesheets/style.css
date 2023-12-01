@@ -90,6 +90,10 @@ main {
   flex-grow: 1;
 }
 
+h3 {
+  text-align: center;
+}
+
 .homepage {
   margin: 2em;
 }
@@ -128,6 +132,10 @@ table {
 th {
   padding: 0.5em;
   border-bottom: 1px solid black;
+}
+
+td {
+  padding: 0.1em 0.5em;
 }
 
 .athlete-details-container {
