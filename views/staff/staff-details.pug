@@ -1,0 +1,33 @@
+extends ../layout
+
+block content
+  main
+    div.content-header
+      h2 Staff Particulars
+    br
+    hr
+    div.staff-details-container
+      section.details-container
+        div.img-holder
+          if staff.img
+            | insert staff image here
+          else 
+            img.avatar(src='/images/avatar.png')
+        div.staff-details
+          div 
+            div.label #[strong Name]  
+            div : #{staff.fullName}
+          div 
+            div.label #[strong Sport] 
+            div
+              span : 
+                a(href=staff.sport.url) #{staff.sport.name}
+          div 
+            div.label #[strong Designation] 
+            div : #{staff.designation}
+          div 
+            div.label #[strong Bio] 
+            div : #{staff.bio}
+      div.crud-btn-container
+        button.crud-btn EDIT PROFILE
+        button.del-btn.crud-btn DELETE PROFILE

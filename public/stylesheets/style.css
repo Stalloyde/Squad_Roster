@@ -138,7 +138,7 @@ td {
   padding: 0.1em 0.5em;
 }
 
-.athlete-details-container {
+.athlete-details-container, .staff-details-container {
   margin: 5em;
 }
 
@@ -163,13 +163,14 @@ td {
   background-color: white;
 }
 
-.athlete-details > div {
+.athlete-details > div, .staff-details > div {
   display: flex;
   padding: 1em;
+  max-width: 800px;
 }
 
 .label {
-  width: 110px;
+  min-width: 110px;
 }
 
 .crud-btn-container {
