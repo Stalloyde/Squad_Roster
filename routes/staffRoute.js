@@ -1,10 +1,9 @@
 const express = require('express');
+const staffController = require('../controller/staffController');
 
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/', (req, res, next) => {
-  res.render('staff');
-});
+router.get('/', staffController.staffDirectory);
 
 module.exports = router;

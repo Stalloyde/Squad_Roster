@@ -1,4 +1,24 @@
-extends layout
+extends ../layout
 
 block content
-  p Staff
+  main 
+    div.content-header
+      h2 Staff Directory
+      button.crud-btn NEW STAFF
+    br
+    hr
+    section
+      table
+        tr
+          th #
+          th Name
+          th Sport 
+          th Designation
+        for staff,index in staffList 
+          tr
+            td.align-center #{index+1}
+            td: a(href=staff.url) #{staff.fullName}
+            td.align-center: a(href=staff.sport.url) #{staff.sport.name}
+            td #{staff.designation}
+
+
