@@ -21,15 +21,15 @@ exports.newAthleteGET = asyncHandler(async (req, res, next) => {
 });
 
 exports.newAthletePOST = [
-  body('firstName').notEmpty().trim().escape(),
-  body('lastName').notEmpty().trim().escape(),
+  body('firstName').trim().escape(),
+  body('lastName').trim().escape(),
   body('sex.*').escape(),
-  body('height').notEmpty().isNumeric().escape(),
-  body('weight').notEmpty().isNumeric().escape(),
-  body('sport').notEmpty().trim().escape(),
-  body('dob').notEmpty().isISO8601().toDate()
+  body('height').isNumeric().escape(),
+  body('weight').isNumeric().escape(),
+  body('sport').trim().escape(),
+  body('dob').isISO8601().toDate()
     .escape(),
-  body('password').notEmpty().equals(process.env.PASSWORD)
+  body('password').equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res, next) => {
