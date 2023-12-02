@@ -25,4 +25,7 @@ AthleteSchema.virtual('dateOfBirthFormatted').get(function () {
   return DateTime.fromJSDate(this.dateOfBirth).toLocaleString(DateTime.DATE_MED);
 });
 
+AthleteSchema.virtual('dateOfBirthForm').get(function () {
+  return DateTime.fromJSDate(this.dateOfBirth).toISODate();
+});
 module.exports = mongoose.model('Athlete', AthleteSchema);
