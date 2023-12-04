@@ -17,7 +17,7 @@ exports.athleteDetails = asyncHandler(async (req, res, next) => {
 });
 
 exports.newAthleteGET = asyncHandler(async (req, res, next) => {
-  const sports = await Sport.find();
+  const sports = await Sport.find().sort({ name: 1 });
   res.render('./athletes/new-athlete', { sports });
 });
 
