@@ -11,6 +11,7 @@ block content
     hr
     br
     section
+    if athletes.length > 0
       h3 ATHLETES
       table
         tr
@@ -45,4 +46,5 @@ block content
             td: a(href=staff.url) #{staff.fullName}
             td.align-center: a(href=staff.sport.url) #{staff.sport.name}
             td #{staff.designation}
-
+    else 
+      p There are no athletes for this sport

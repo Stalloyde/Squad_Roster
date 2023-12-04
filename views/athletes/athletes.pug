@@ -8,6 +8,7 @@ block content
     br
     hr
     section
+    if athletes.length > 0
       table
         tr
           th #
@@ -26,4 +27,5 @@ block content
             td.align-center #{athlete.weight}
             td.align-center: a(href=athlete.sport.url) #{athlete.sport.name}
             td.align-center #{athlete.dateOfBirthFormatted}
-
+    else
+     p There are no athletes in the database

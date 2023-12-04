@@ -4,10 +4,11 @@ block content
   main
     div.content-header
       h2 Sports' Directory
-      button.crud-btn NEW SPORT
+      a(href='/sports/create'): button.crud-btn NEW SPORT
     br
     hr
     section
+    if sports.length > 0
       table
         tr
           th #
@@ -16,3 +17,5 @@ block content
           tr
             td.align-center #{index+1}
             td.align-center: a(href=sport.url) #{sport.name}
+    else 
+      p There are no sports in the database
