@@ -1,5 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const asyncHandler = require('express-async-handler');
+const { body, validationResult } = require('express-validator');
 const Sport = require('../models/sport');
 const Athlete = require('../models/athlete');
 const Staff = require('../models/staff');
@@ -24,3 +26,30 @@ exports.sportDetails = asyncHandler(async (req, res, next) => {
     .sort((a, b) => (a.lastName < b.lastName ? -1 : 1));
   res.render('./sports/sport-details', { sport, athletes: sportAthletes, staffList: sportStaff });
 });
+
+exports.newSportGET = asyncHandler(async (req, res, next) => {
+  const sports = await Sport.find().sort({ name: 1 });
+  res.render('./sports/new-sport', { sports });
+});
+
+exports.newSportPOST = [
+  body('sportName').trim().escape(),
+  body('password').equals(process.env.PASSWORD)
+    .withMessage('Password incorrect. Please try again.'),
+
+  asyncHandler(async (req, res, next) => {
+    const newSport = new Sport({ name: req.body.sportName });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.render('./sports/new-sport', { sport: newSport, errors: errors.array() });
+    } else {
+      const duplicateCheck = await Sport.find({ name: newSport.name });
+      if (duplicateCheck) {
+        res.render('./sports/new-sport', { sport: newSport, errors: errors.array(), duplicateError: `${newSport.name} already exists` });
+      } else {
+        await newSport.save();
+        res.redirect(newSport.url);
+      }
+    }
+  }),
+];

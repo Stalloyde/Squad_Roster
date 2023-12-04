@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  main 
+    div.content-header
+      h2 New Sport
+    br
+    hr
+    section
+      form(method='POST')
+        label(for='sport-name') Name: 
+        if duplicateError
+          input#sport-name(required type='text' name='sportName' value=(sport===undefined? '': sport.name))
+          p.error-msg #{duplicateError}
+        else
+          input#sport-name(required type='text' name='sportName' value=(sport===undefined? '': sport.name))
+          
+        label(for='password') Password: 
+        input#password(required type='password' name='password')
+        if errors 
+          each error in errors 
+            ul 
+              li.error-msg #{error.msg}
+        div.crud-btn-container
+          button(type='submit').crud-btn Submit
+          a(href='/sports'): button(type='button').del-btn.crud-btn Cancel
