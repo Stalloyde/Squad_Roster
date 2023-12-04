@@ -1,0 +1,58 @@
+extends ../layout
+
+block content
+  main 
+    div.content-header
+      h2 New Staff
+    br
+    hr
+    section
+      form(method='POST')
+        if duplicateError
+          label(for='first-name') First Name: 
+          input#staff-name(required type='text' name='firstName' value=(staff===undefined? '': staff.firstName))
+          label(for='last-name') Last Name: 
+          input#last-name(required type='text' name='lastName' value=(staff===undefined? '': staff.lastName))
+          p.error-msg #{duplicateError}
+          label(for='sport') Sport: 
+            select#sport(name='sport')
+              each sport in sports 
+                if staff
+                  option(value=sport._id selected=(staff.sport._id===sport._id? 'selected': '')) #{sport.name} 
+                else 
+                  option(value=sport._id) #{sport.name} 
+          label(for='designation') Designation: 
+          input#designation(required type='text' name='designation' value=(staff===undefined? '': staff.designation))
+          label(for='bio') bio: 
+          input#bio(required type='textarea' name='bio' value=(staff===undefined? '': staff.bio))
+          label(for='password') Password: 
+          input#password(required type='password' name='password')
+          if errors 
+            each error in errors 
+              ul 
+                li.error-msg #{error.msg}
+        else 
+          label(for='first-name') First Name: 
+          input#staff-name(required type='text' name='firstName' value=(staff===undefined? '': staff.firstName))
+          label(for='last-name') Last Name: 
+          input#last-name(required type='text' name='lastName' value=(staff===undefined? '': staff.lastName))
+          label(for='sport') Sport: 
+            select#sport(name='sport')
+              each sport in sports 
+                if staff
+                  option(value=sport._id selected=(staff.sport._id===sport._id? 'selected': '')) #{sport.name} 
+                else 
+                  option(value=sport._id) #{sport.name} 
+          label(for='designation') Designation: 
+          input#designation(required type='text' name='designation' value=(staff===undefined? '': staff.designation))
+          label(for='bio') Bio: 
+          input#bio(required type='textarea' name='bio' value=(staff===undefined? '': staff.bio))
+          label(for='password') Password: 
+          input#password(required type='password' name='password')
+          if errors 
+            each error in errors 
+              ul 
+                li.error-msg #{error.msg}
+        div.crud-btn-container
+          button(type='submit').crud-btn Submit
+          a(href='/staff'): button(type='button').del-btn.crud-btn Cancel
