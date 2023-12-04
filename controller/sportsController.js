@@ -39,9 +39,7 @@ exports.newSportPOST = [
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res, next) => {
-    console.log(req.body.sportName);
     const sportName = capitalise(req.body.sportName);
-    console.log(sportName);
 
     const newSport = new Sport({ name: sportName });
     const errors = validationResult(req);
