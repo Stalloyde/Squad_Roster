@@ -35,8 +35,8 @@ exports.newAthletePOST = [
 
   asyncHandler(async (req, res, next) => {
     const newAthlete = new Athlete({
-      firstName: capitalise.capitalise(req.body.firstName),
-      lastName: capitalise.capitalise(req.body.lastName),
+      firstName: capitalise(req.body.firstName),
+      lastName: capitalise(req.body.lastName),
       sex: req.body.sex,
       height: req.body.height,
       weight: req.body.weight,
