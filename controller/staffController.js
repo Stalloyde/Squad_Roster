@@ -1,5 +1,6 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
+const capitalise = require('./capitalise');
 const Staff = require('../models/staff');
 
 exports.staffDirectory = asyncHandler(async (req, res, next) => {

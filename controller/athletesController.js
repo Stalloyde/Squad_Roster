@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
+const capitalise = require('./capitalise');
 const Athlete = require('../models/athlete');
 const Sport = require('../models/sport');
 
@@ -34,8 +35,8 @@ exports.newAthletePOST = [
 
   asyncHandler(async (req, res, next) => {
     const newAthlete = new Athlete({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+      firstName: capitalise.capitalise(req.body.firstName),
+      lastName: capitalise.capitalise(req.body.lastName),
       sex: req.body.sex,
       height: req.body.height,
       weight: req.body.weight,

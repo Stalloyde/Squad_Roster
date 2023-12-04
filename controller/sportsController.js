@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
+const capitalise = require('./capitalise');
 const Sport = require('../models/sport');
 const Athlete = require('../models/athlete');
 const Staff = require('../models/staff');
@@ -38,14 +39,18 @@ exports.newSportPOST = [
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res, next) => {
-    const newSport = new Sport({ name: req.body.sportName });
+    console.log(req.body.sportName);
+    const sportName = capitalise(req.body.sportName);
+    console.log(sportName);
+
+    const newSport = new Sport({ name: sportName });
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.render('./sports/new-sport', { sport: newSport, errors: errors.array() });
     } else {
       const duplicateCheck = await Sport.find({ name: newSport.name });
       if (duplicateCheck) {
-        res.render('./sports/new-sport', { sport: newSport, errors: errors.array(), duplicateError: `${newSport.name} already exists` });
+        res.render('./sports/new-sport', { sport: newSport, errors: errors.array(), duplicateError: `'${newSport.name}' already exists` });
       } else {
         await newSport.save();
         res.redirect(newSport.url);
