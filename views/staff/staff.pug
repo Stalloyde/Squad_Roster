@@ -8,6 +8,7 @@ block content
     br
     hr
     section
+    if staffList.length > 0
       table
         tr
           th #
@@ -20,5 +21,6 @@ block content
             td: a(href=staff.url) #{staff.fullName}
             td.align-center: a(href=staff.sport.url) #{staff.sport.name}
             td #{staff.designation}
-
+    else 
+      p There are no staff in the database
 
