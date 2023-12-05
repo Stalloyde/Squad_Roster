@@ -16,6 +16,6 @@ block content
         for sport,index in sports
           tr
             td.align-center #{index+1}
-            td.align-center: a(href=sport.url) #{sport.name}
+            td: a(href=sport.url) #{sport.name}
     else 
       p There are no sports in the database
