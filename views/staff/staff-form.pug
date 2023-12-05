@@ -3,7 +3,10 @@ extends ../layout
 block content
   main 
     div.content-header
-      h2 New Staff
+      if title 
+        h2 #{title}
+      else
+        h2 New Staff
     br
     hr
     section
@@ -55,4 +58,7 @@ block content
                 li.error-msg #{error.msg}
         div.crud-btn-container
           button(type='submit').crud-btn Submit
-          a(href='/staff'): button(type='button').del-btn.crud-btn Cancel
+          if title 
+            a(href=`/staff/${staff.id}`): button(type='button').del-btn.crud-btn Cancel
+          else
+            a(href='/staff'): button(type='button').del-btn.crud-btn Cancel

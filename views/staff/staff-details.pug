@@ -29,5 +29,5 @@ block content
             div.label #[strong Bio] 
             div : #{staff.bio}
       div.crud-btn-container
-        button.crud-btn EDIT PROFILE
-        button.del-btn.crud-btn DELETE PROFILE
+        a(href=`${staff._id}/edit`): button.crud-btn EDIT PROFILE
+        a(href=`${staff._id}/delete`): button.del-btn.crud-btn DELETE PROFILE

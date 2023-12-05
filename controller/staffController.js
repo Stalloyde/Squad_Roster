@@ -13,7 +13,7 @@ exports.staffDirectory = asyncHandler(async (req, res, next) => {
 });
 
 exports.staffDetails = asyncHandler(async (req, res, next) => {
-  const staff = await Staff.findOne({ _id: req.params.staffId })
+  const staff = await Staff.findOne({ _id: req.params.id })
     .populate('sport')
     .sort({ lastName: 1 });
   res.render('./staff/staff-details', { staff });
@@ -21,7 +21,7 @@ exports.staffDetails = asyncHandler(async (req, res, next) => {
 
 exports.newStaffGET = asyncHandler(async (req, res, next) => {
   const sports = await Sport.find().sort({ name: 1 });
-  res.render('./staff/new-staff', { sports });
+  res.render('./staff/staff-form', { sports });
 });
 
 exports.newStaffPOST = [
@@ -39,14 +39,14 @@ exports.newStaffPOST = [
       firstName: capitalise(req.body.firstName),
       lastName: capitalise(req.body.lastName),
       sport: req.body.sport,
-      designation: req.body.designation,
+      designation: capitalise(req.body.designation),
       bio: capitalise(req.body.bio),
     });
 
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.render('./staff/new-staff', { sports, staff: newStaff, errors: errors.array() });
+      res.render('./staff/staff-form', { sports, staff: newStaff, errors: errors.array() });
     } else {
       const duplicateCheck = await Staff.find(
         {
@@ -57,13 +57,99 @@ exports.newStaffPOST = [
       );
 
       if (duplicateCheck.length > 0) {
-        res.render('./staff/new-staff', {
+        res.render('./staff/staff-form', {
           sports, staff: newStaff, errors: errors.array(), duplicateError: `'${newStaff.fullName}' already exists`,
         });
       } else {
         await newStaff.save();
         res.redirect(newStaff.url);
       }
+    }
+  }),
+];
+
+exports.editStaffGET = asyncHandler(async (req, res, next) => {
+  const [[staff], sports] = await Promise.all(
+    [Staff.find({ _id: req.params.id }).populate('sport'),
+      Sport.find().sort({ name: 1 }),
+    ],
+  );
+  res.render('./staff/staff-form', { staff, sports, title: `Edit Staff Particulars- ${staff.fullName}` });
+});
+
+exports.editStaffPOST = [
+  body('firstName').trim().escape(),
+  body('lastName').trim().escape(),
+  body('sport').trim().escape(),
+  body('designation').trim().escape(),
+  body('bio').trim().escape(),
+  body('password').equals(process.env.PASSWORD)
+    .withMessage('Password incorrect. Please try again.'),
+
+  asyncHandler(async (req, res, next) => {
+    const [[staff], sports] = await Promise.all(
+      [Staff.find({ _id: req.params.id }),
+        Sport.find().sort({ name: 1 }),
+      ],
+    );
+    const newStaff = new Staff({
+      id: req.params.id,
+      firstName: capitalise(req.body.firstName),
+      lastName: capitalise(req.body.lastName),
+      sport: req.body.sport,
+      designation: capitalise(req.body.designation),
+      bio: capitalise(req.body.bio),
+    });
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.render('./staff/staff-form', {
+        sports, staff: newStaff, errors: errors.array(), title: `Edit Staff Particulars- ${staff.fullName}`,
+      });
+    } else {
+      const duplicateCheck = await Staff.find(
+        {
+          firstName: newStaff.firstName,
+          lastName: newStaff.lastName,
+          sport: newStaff.sport.name,
+        },
+      );
+
+      if (duplicateCheck.length > 0) {
+        res.render('./staff/staff-form', {
+          sports,
+          staff: newStaff,
+          errors: errors.array(),
+          duplicateError: `'${newStaff.fullName}' already exists`,
+          title: `Edit Staff Particulars- ${newStaff.fullName}`,
+        });
+      } else {
+        await Staff.findByIdAndUpdate(req.params.id, newStaff);
+        res.redirect(newStaff.url);
+      }
+    }
+  }),
+];
+
+exports.deleteStaffGET = asyncHandler(async (req, res, next) => {
+  const targetStaff = await Staff.findById(req.params.id);
+  res.render('./staff/staff-delete', { staff: targetStaff });
+});
+
+exports.deleteStaffPOST = [
+  body('password').equals(process.env.PASSWORD)
+    .withMessage('Password incorrect. Please try again.'),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const targetSport = await Staff.findById(req.params.id);
+
+    if (!errors.isEmpty()) {
+      res.render('./staff/staff-delete', { staff: targetSport, errors: errors.array() });
+    } else {
+      await Staff.findByIdAndDelete(req.params.id);
+      res.redirect('/staff');
     }
   }),
 ];

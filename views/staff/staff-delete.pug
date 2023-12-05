@@ -1,0 +1,20 @@
+extends ../layout
+
+block content
+  main 
+    div.content-header
+       h2 Delete Staff - #{staff.fullName}
+    br
+    hr
+    section
+      form(method='POST')
+        label(for='password') Password: 
+        input#password(required type='password' name='password')
+        if errors 
+          each error in errors 
+            if error.path === 'password'
+              ul 
+                li.error-msg #{error.msg}
+        div.crud-btn-container
+          button(type='submit').crud-btn Delete Athlete
+          a(href=`/staff/${staff._id}`): button(type='button').del-btn.crud-btn Cancel
