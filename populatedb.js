@@ -17,9 +17,13 @@ async function main() {
   console.log('Connecting to DB');
   await mongoose.connect(mongoDB);
   console.log('Connected to DB');
+  await Athlete.deleteMany().then(console.log('Deleted Athlete'));
+  await Sport.deleteMany().then(console.log('Deleted Sport'));
+  await Staff.deleteMany().then(console.log('Deleted Staff'));
+
   await Promise.all([
     createSports(),
-    createAthletes(),
+    createAthletes(),``
     createStaff(),
   ]);
   console.log('DB Populated. Closing DB connection');
