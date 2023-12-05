@@ -7,7 +7,7 @@ const SportSchema = new Schema({
 });
 
 SportSchema.virtual('url').get(function () {
-  return `/sports/${this.name.toLowerCase()}`;
+  return `/sports/${this.name}`;
 });
 
 module.exports = mongoose.model('Sport', SportSchema);
