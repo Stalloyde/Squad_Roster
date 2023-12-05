@@ -3,7 +3,7 @@ extends ../layout
 block content
   main
     div.content-header
-      h2 Athlete Particulars
+      h2 Athlete Particulars - #{athlete.fullName}
     br
     hr
     div.athlete-details-container
@@ -35,5 +35,5 @@ block content
             div.label #[strong Date of Birth] 
             div : #{athlete.dateOfBirthFormatted}
       div.crud-btn-container
-        button.crud-btn EDIT PROFILE
-        button.del-btn.crud-btn DELETE PROFILE
+        a(href=`${athlete._id}/edit`): button.crud-btn EDIT PROFILE
+        a(href=`${athlete._id}/delete`): button.del-btn.crud-btn DELETE PROFILE
