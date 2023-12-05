@@ -56,7 +56,7 @@ exports.newStaffPOST = [
         },
       );
 
-      if (duplicateCheck) {
+      if (duplicateCheck.length > 0) {
         res.render('./staff/new-staff', {
           sports, staff: newStaff, errors: errors.array(), duplicateError: `'${newStaff.fullName}' already exists`,
         });
