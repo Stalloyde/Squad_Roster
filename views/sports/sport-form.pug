@@ -26,4 +26,4 @@ block content
               li.error-msg #{error.msg}
         div.crud-btn-container
           button(type='submit').crud-btn Submit
-          a(href=`/sports/${sport._id}`): button(type='button').del-btn.crud-btn Cancel
+          a(href='/sports/#{sport._id}'): button(type='button').del-btn.crud-btn Cancel
