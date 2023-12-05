@@ -90,8 +90,19 @@ exports.editSportPOST = [
 ];
 
 exports.deleteSportGET = asyncHandler(async (req, res, next) => {
-  const targetSport = await Sport.findById(req.params.id);
-  res.render('./sports/sport-delete', { sport: targetSport });
+  const [targetSport, athletes, staff] = await Promise.all([
+    Sport.findById(req.params.id),
+    Athlete.find().populate('sport'),
+    Staff.find().populate('sport'),
+  ]);
+  const athletesInTargetSport = athletes.filter(
+    (athlete) => athlete.sport.name === targetSport.name,
+  );
+
+  const staffInTargetSport = athletes.filter(
+    (staff) => staff.sport.name === targetSport.name,
+  );
+  res.render('./sports/sport-delete', { sport: targetSport, athletesInTargetSport, staffInTargetSport });
 });
 
 exports.deleteSportPOST = [

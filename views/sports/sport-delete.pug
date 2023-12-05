@@ -7,14 +7,19 @@ block content
     br
     hr
     section
-      form(method='POST')
-        label(for='password') Password: 
-        input#password(required type='password' name='password')
-        if errors 
-          each error in errors 
-            if error.path === 'password'
-              ul 
-                li.error-msg #{error.msg}
-        div.crud-btn-container
-          button(type='submit').crud-btn Delete Sport
-          a(href=`/sports/${sport._id}`): button(type='button').del-btn.crud-btn Cancel
+      if athletesInTargetSport || staffInTargetSport
+        p Cannot delete sport as there are many staff and athletes in it. Please delete all staff and athletes connected to the sport and try again.
+        br
+        a(href=`/sports/${sport._id}`) Return to '#{sport.name}'
+      else
+        form(method='POST')
+          label(for='password') Password: 
+          input#password(required type='password' name='password')
+          if errors 
+            each error in errors 
+              if error.path === 'password'
+                ul 
+                  li.error-msg #{error.msg}
+          div.crud-btn-container
+            button(type='submit').crud-btn Delete Sport
+            a(href=`/sports/${sport._id}`): button(type='button').del-btn.crud-btn Cancel
