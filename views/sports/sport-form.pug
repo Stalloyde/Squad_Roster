@@ -3,7 +3,10 @@ extends ../layout
 block content
   main 
     div.content-header
-      h2 New Sport
+      if title
+        h2 #{title}
+      else
+        h2 New Sport
     br
     hr
     section
@@ -23,4 +26,4 @@ block content
               li.error-msg #{error.msg}
         div.crud-btn-container
           button(type='submit').crud-btn Submit
-          a(href='/sports'): button(type='button').del-btn.crud-btn Cancel
+          a(href=`/sports/${sport._id}`): button(type='button').del-btn.crud-btn Cancel

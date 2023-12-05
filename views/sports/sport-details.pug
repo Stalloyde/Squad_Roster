@@ -5,8 +5,8 @@ block content
     div.content-header
       h2 #{sport.name} Team Directory
       div.crud-btn-container
-        button.crud-btn EDIT SPORT
-        button.del-btn.crud-btn DELETE SPORT
+        a(href=`./${sport._id}/edit`): button.crud-btn EDIT SPORT
+        a(href=`./${sport._id}/delete`): button.del-btn.crud-btn DELETE SPORT
     br
     hr
     br

@@ -7,7 +7,7 @@ const SportSchema = new Schema({
 });
 
 SportSchema.virtual('url').get(function () {
-  return `/sports/${this.name}`;
+  return `/sports/${this._id}`;
 });
 
 module.exports = mongoose.model('Sport', SportSchema);
