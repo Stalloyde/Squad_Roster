@@ -23,7 +23,7 @@ async function main() {
 
   await Promise.all([
     createSports(),
-    createAthletes(),``
+    createAthletes(),
     createStaff(),
   ]);
   console.log('DB Populated. Closing DB connection');
