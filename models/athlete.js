@@ -4,6 +4,16 @@ const { DateTime } = require('luxon');
 const { Schema } = mongoose;
 
 const AthleteSchema = new Schema({
+  image: {
+    fieldname: String,
+    originalname: String,
+    encoding: String,
+    mimetype: String,
+    destination: String,
+    filename: String,
+    path: String,
+    size: Number,
+  },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   sex: { type: String, required: true },

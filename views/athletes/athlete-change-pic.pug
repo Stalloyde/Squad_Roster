@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+  main 
+    div.content-header
+      if title 
+        h2 #{title}
+      else 
+        h2 New Athlete
+    br
+    hr
+    section
+      form(method='POST' enctype='multipart/form-data')
+        label(for='image') Upload Image (PNG, JPEG): 
+        input(type='file' name='image' accept='image/png, image/jpeg, image/*')
+        label(for='password') Password: 
+        input#password(required type='password' name='password')
+        if errors 
+          each error in errors 
+            if error.path === 'password'
+              ul 
+                li.error-msg #{error.msg}
+        div.crud-btn-container
+          button(type='submit').crud-btn Submit
+          if title
+            a(href=`/athletes/${athlete._id}`): button(type='button').del-btn.crud-btn Cancel
+          else 
+            a(href=`/athletes`): button(type='button').del-btn.crud-btn Cancel

@@ -9,8 +9,8 @@ block content
     div.athlete-details-container
       section.details-container
         div.img-holder
-          if athlete.img
-            | insert athlete image here
+          if athlete.image.path
+            img.avatar(src=`/images/uploads/${athlete.image.filename}`)
           else 
             img.avatar(src='/images/avatar.png')
         div.athlete-details
@@ -36,4 +36,5 @@ block content
             div : #{athlete.dateOfBirthFormatted}
       div.crud-btn-container
         a(href=`${athlete._id}/edit`): button.crud-btn EDIT PROFILE
+        a(href=`${athlete._id}/change-profile-pic`): button.crud-btn CHANGE PROFILE PICTURE
         a(href=`${athlete._id}/delete`): button.del-btn.crud-btn DELETE PROFILE
