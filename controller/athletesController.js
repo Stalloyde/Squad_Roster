@@ -112,7 +112,6 @@ exports.editAthleteDetailsPOST = [
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res, next) => {
-    console.log(req.body);
     const newAthlete = new Athlete({
       id: req.params.id,
       firstName: capitalise(req.body.firstName),
