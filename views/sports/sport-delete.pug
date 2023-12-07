@@ -7,7 +7,7 @@ block content
     br
     hr
     section
-      if athletesInTargetSport || staffInTargetSport
+      if athletesInTargetSport.length > 0 || staffInTargetSport.length > 0
         p Cannot delete sport as there are many staff and athletes in it. Please delete all staff and athletes connected to the sport and try again.
         br
         a(href=`/sports/${sport._id}`) Return to '#{sport.name}'
