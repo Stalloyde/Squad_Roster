@@ -31,8 +31,12 @@ block content
             td.align-center #{athlete.weight}
             td.align-center #{athlete.sport.name}
             td.align-center #{athlete.dateOfBirthFormatted}
-      hr
-      br
+    else 
+      p There are no athletes for this sport
+    br
+    hr
+    br
+    if staffList.length > 0
       h3 STAFF
       table
         tr
@@ -47,4 +51,4 @@ block content
             td.align-center #{staff.sport.name}
             td #{staff.designation}
     else 
-      p There are no athletes for this sport
+      p There are no staff for this sport
