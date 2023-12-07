@@ -10,8 +10,11 @@ block content
     br
     hr
     section
-      form(method='POST')
-        if duplicateError
+      form(method='POST' enctype='multipart/form-data')
+        if duplicateError 
+          if !staff
+            label(for='image') Upload Image (optional): 
+            input(type='file' name='image' )
           label(for='first-name') First Name: 
           input#staff-name(required type='text' name='firstName' value=(staff===undefined? '': staff.firstName))
           label(for='last-name') Last Name: 
@@ -35,6 +38,9 @@ block content
               ul 
                 li.error-msg #{error.msg}
         else 
+          if !staff
+            label(for='image') Upload Image (optional): 
+            input(type='file' name='image' )
           label(for='first-name') First Name: 
           input#staff-name(required type='text' name='firstName' value=(staff===undefined? '': staff.firstName))
           label(for='last-name') Last Name: 

@@ -3,14 +3,14 @@ extends ../layout
 block content
   main
     div.content-header
-      h2 Staff Particulars
+      h2 Staff Particulars - #{staff.fullName}
     br
     hr
     div.staff-details-container
       section.details-container
         div.img-holder
-          if staff.img
-            | insert staff image here
+          if staff.image.path
+            img.avatar(src=`/images/uploads/${staff.image.filename}`)
           else 
             img.avatar(src='/images/avatar.png')
         div.staff-details
@@ -30,4 +30,5 @@ block content
             div : #{staff.bio}
       div.crud-btn-container
         a(href=`${staff._id}/edit`): button.crud-btn EDIT PROFILE
+        a(href=`${staff._id}/change-profile-pic`): button.crud-btn CHANGE PROFILE PICTURE
         a(href=`${staff._id}/delete`): button.del-btn.crud-btn DELETE PROFILE

@@ -1,0 +1,25 @@
+extends ../layout
+
+block content
+  main 
+    div.content-header
+      h2 #{title}
+    br
+    hr
+    section
+      form(method='POST' enctype='multipart/form-data')
+        label(for='image') Upload Image (PNG, JPEG): 
+        input(type='file' name='image' accept='image/png, image/jpeg, image/*')
+        label(for='password') Password: 
+        input#password(required type='password' name='password')
+        if errors 
+          each error in errors 
+            if error.path === 'password'
+              ul 
+                li.error-msg #{error.msg}
+        div.crud-btn-container
+          button(type='submit').crud-btn Submit
+          if title
+            a(href=`/staff/${staff._id}`): button(type='button').del-btn.crud-btn Cancel
+          else 
+            a(href=`/staff`): button(type='button').del-btn.crud-btn Cancel

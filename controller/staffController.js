@@ -34,14 +34,45 @@ exports.newStaffPOST = [
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res, next) => {
+    let newStaff;
     const sports = await Sport.find();
-    const newStaff = new Staff({
-      firstName: capitalise(req.body.firstName),
-      lastName: capitalise(req.body.lastName),
-      sport: req.body.sport,
-      designation: capitalise(req.body.designation),
-      bio: capitalise(req.body.bio),
-    });
+    if (req.file) {
+      newStaff = new Staff({
+        image: {
+          fieldname: req.file.fieldname,
+          originalname: req.file.originalname,
+          encoding: req.file.encoding,
+          mimetype: req.file.mimetype,
+          destination: req.file.destination,
+          filename: req.file.filename,
+          path: req.file.path,
+          size: req.file.size,
+        },
+        firstName: capitalise(req.body.firstName),
+        lastName: capitalise(req.body.lastName),
+        sport: req.body.sport,
+        designation: capitalise(req.body.designation),
+        bio: capitalise(req.body.bio),
+      });
+    } else {
+      newStaff = new Staff({
+        image: {
+          fieldname: null,
+          originalname: null,
+          encoding: null,
+          mimetype: null,
+          destination: null,
+          filename: null,
+          path: null,
+          size: null,
+        },
+        firstName: capitalise(req.body.firstName),
+        lastName: capitalise(req.body.lastName),
+        sport: req.body.sport,
+        designation: capitalise(req.body.designation),
+        bio: capitalise(req.body.bio),
+      });
+    }
 
     const errors = validationResult(req);
 
@@ -128,6 +159,61 @@ exports.editStaffPOST = [
         await Staff.findByIdAndUpdate(req.params.id, newStaff);
         res.redirect(newStaff.url);
       }
+    }
+  }),
+];
+
+exports.changeStaffPicGET = asyncHandler(async (req, res, next) => {
+  const targetStaff = await Staff.findById(req.params.id);
+  res.render('./staff/staff-change-pic', { staff: targetStaff, title: `Change Picture - ${targetStaff.fullName}` });
+});
+
+exports.changeStaffPicPOST = [
+  body('password').equals(process.env.PASSWORD)
+    .withMessage('Password incorrect. Please try again.'),
+
+  asyncHandler(async (req, res, next) => {
+    let newStaff;
+    if (req.file) {
+      newStaff = new Staff({
+        image: {
+          fieldname: req.file.fieldname,
+          originalname: req.file.originalname,
+          encoding: req.file.encoding,
+          mimetype: req.file.mimetype,
+          destination: req.file.destination,
+          filename: req.file.filename,
+          path: req.file.path,
+          size: req.file.size,
+        },
+        id: req.params.id,
+      });
+    } else {
+      newStaff = new Staff({
+        image: {
+          fieldname: null,
+          originalname: null,
+          encoding: null,
+          mimetype: null,
+          destination: null,
+          filename: null,
+          path: null,
+          size: null,
+        },
+        id: req.params.id,
+      });
+    }
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const targetStaff = await Staff.findById(req.params.id);
+      res.render('./staff/Staff-change-pic', {
+        staff: newStaff, errors: errors.array(), title: `Change Picture - ${targetStaff.fullName}`,
+      });
+    } else {
+      const updatedStaff = await Staff.findOneAndUpdate({ _id: req.params.id }, newStaff);
+      res.redirect(updatedStaff.url);
     }
   }),
 ];

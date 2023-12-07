@@ -3,6 +3,16 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const StaffSchema = new Schema({
+  image: {
+    fieldname: String,
+    originalname: String,
+    encoding: String,
+    mimetype: String,
+    destination: String,
+    filename: String,
+    path: String,
+    size: Number,
+  },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   sport: { type: mongoose.Schema.Types.ObjectId, ref: 'Sport', required: true },
