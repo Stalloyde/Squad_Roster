@@ -15,7 +15,7 @@ block content
           label(for='image') Upload Image (PNG, JPEG): 
           input(type='file' name='image' accept='image/png, image/jpeg, image/*')
         else 
-          if !athlete.image.path
+          if athlete.image.path
             label(for='image') Upload Image (PNG, JPEG): 
             input(type='file' name='image' accept='image/png, image/jpeg, image/*')
         label(for='first-name') First Name: 
