@@ -10,49 +10,54 @@ block content
     br
     hr
     section
-      form(method='POST' enctype='multipart/form-data')
-        if !athlete
-          label(for='image') Upload Image (PNG, JPEG): 
-          input(type='file' name='image' accept='image/png, image/jpeg, image/*')
-        else 
-          if athlete.image.path
+      if sports.length > 0
+        form(method='POST' enctype='multipart/form-data')
+          if !athlete
             label(for='image') Upload Image (PNG, JPEG): 
             input(type='file' name='image' accept='image/png, image/jpeg, image/*')
-        label(for='first-name') First Name: 
-        input#first-name(required type='text' name='firstName' value=(athlete===undefined? '': athlete.firstName))
-        label(for='last-name') Last Name: 
-        input#last-name(required type='text' name='lastName' value=(athlete===undefined? '': athlete.lastName))
-        label(for='sex') Sex: 
-        select#sex(name='sex')
-          if athlete 
-            option(value='Male' selected=(athlete.sex==='Male'? 'selected': '')) Male 
-            option(value='Female' selected=(athlete.sex==='Female'? 'selected': '')) Female 
           else 
-            option(value='Male') Male 
-            option(value='Female') Female 
-        label(for='height') Height(cm) 
-        input#height(required type='number' name='height' value=(athlete===undefined? '': athlete.height))
-        label(for='weight') Weight(kg): 
-        input#weight(required type='number' name='weight' value=(athlete===undefined? '': athlete.weight))
-        label(for='sport') Sport: 
-        select#sport(name='sport')
-          each sport in sports 
-            if athlete
-              option(value=sport._id selected=(athlete.sport._id===sport._id? 'selected': '')) #{sport.name} 
+            if athlete.image.path
+              label(for='image') Upload Image (PNG, JPEG): 
+              input(type='file' name='image' accept='image/png, image/jpeg, image/*')
+          label(for='first-name') First Name: 
+          input#first-name(required type='text' name='firstName' value=(athlete===undefined? '': athlete.firstName))
+          label(for='last-name') Last Name: 
+          input#last-name(required type='text' name='lastName' value=(athlete===undefined? '': athlete.lastName))
+          label(for='sex') Sex: 
+          select#sex(name='sex')
+            if athlete 
+              option(value='Male' selected=(athlete.sex==='Male'? 'selected': '')) Male 
+              option(value='Female' selected=(athlete.sex==='Female'? 'selected': '')) Female 
             else 
-              option(value=sport._id) #{sport.name} 
-        label(for='dob') Date of Birth: 
-        input#dob(required type='date' name='dob' value=(athlete === undefined? '': athlete.dateOfBirthForm))
-        label(for='password') Password: 
-        input#password(required type='password' name='password')
-        if errors 
-          each error in errors 
-            if error.path === 'password'
-              ul 
-                li.error-msg #{error.msg}
-        div.crud-btn-container
-          button(type='submit').crud-btn Submit
-          if title
-            a(href=`/athletes/${athlete._id}`): button(type='button').del-btn.crud-btn Cancel
-          else 
-            a(href=`/athletes`): button(type='button').del-btn.crud-btn Cancel
+              option(value='Male') Male 
+              option(value='Female') Female 
+          label(for='height') Height(cm) 
+          input#height(required type='number' name='height' value=(athlete===undefined? '': athlete.height))
+          label(for='weight') Weight(kg): 
+          input#weight(required type='number' name='weight' value=(athlete===undefined? '': athlete.weight))
+          label(for='sport') Sport: 
+          select#sport(name='sport')
+            each sport in sports 
+              if athlete
+                option(value=sport._id selected=(athlete.sport._id===sport._id? 'selected': '')) #{sport.name} 
+              else 
+                option(value=sport._id) #{sport.name} 
+          label(for='dob') Date of Birth: 
+          input#dob(required type='date' name='dob' value=(athlete === undefined? '': athlete.dateOfBirthForm))
+          label(for='password') Password: 
+          input#password(required type='password' name='password')
+          if errors 
+            each error in errors 
+              if error.path === 'password'
+                ul 
+                  li.error-msg #{error.msg}
+          div.crud-btn-container
+            button(type='submit').crud-btn Submit
+            if title
+              a(href=`/athletes/${athlete._id}`): button(type='button').del-btn.crud-btn Cancel
+            else 
+              a(href=`/athletes`): button(type='button').del-btn.crud-btn Cancel
+      else 
+        p Can't create a new athlete without any pre-existing sport
+        br
+        a(href='/sports/create') Add a sport here
