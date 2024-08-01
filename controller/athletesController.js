@@ -3,8 +3,6 @@ const express = require('express');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const capitalise = require('./capitalise');
-const Athlete = require('../models/athlete');
-const Sport = require('../models/sport');
 
 exports.athletesDirectory = asyncHandler(async (req, res, next) => {
   const athletes = await Athlete.find().populate('sport').sort({ lastName: 1 });
@@ -28,9 +26,9 @@ exports.newAthletePOST = [
   body('height').isNumeric().escape(),
   body('weight').isNumeric().escape(),
   body('sport').trim().escape(),
-  body('dob').isISO8601().toDate()
-    .escape(),
-  body('password').equals(process.env.PASSWORD)
+  body('dob').isISO8601().toDate().escape(),
+  body('password')
+    .equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res, next) => {
@@ -82,7 +80,9 @@ exports.newAthletePOST = [
     if (!errors.isEmpty()) {
       const sports = await Sport.find();
       res.render('./athletes/athlete-form', {
-        sports, athlete: newAthlete, errors: errors.array(),
+        sports,
+        athlete: newAthlete,
+        errors: errors.array(),
       });
     } else {
       await newAthlete.save();
@@ -96,7 +96,11 @@ exports.editAthleteDetailsGET = asyncHandler(async (req, res, next) => {
     Sport.find().sort({ name: 1 }),
     Athlete.findById(req.params.id).populate('sport'),
   ]);
-  res.render('./athletes/athlete-form', { sports, athlete: targetAthlete, title: `Edit Particulars - ${targetAthlete.fullName}` });
+  res.render('./athletes/athlete-form', {
+    sports,
+    athlete: targetAthlete,
+    title: `Edit Particulars - ${targetAthlete.fullName}`,
+  });
 });
 
 exports.editAthleteDetailsPOST = [
@@ -106,9 +110,9 @@ exports.editAthleteDetailsPOST = [
   body('height').isNumeric().escape(),
   body('weight').isNumeric().escape(),
   body('sport').trim().escape(),
-  body('dob').isISO8601().toDate()
-    .escape(),
-  body('password').equals(process.env.PASSWORD)
+  body('dob').isISO8601().toDate().escape(),
+  body('password')
+    .equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res, next) => {
@@ -126,17 +130,21 @@ exports.editAthleteDetailsPOST = [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      const [sports, targetAthlete] = await Promise.all(
-        [
-          Sport.find(),
-          Athlete.findById(req.params.id),
-        ],
-      );
+      const [sports, targetAthlete] = await Promise.all([
+        Sport.find(),
+        Athlete.findById(req.params.id),
+      ]);
       res.render('./athletes/athlete-form', {
-        sports, athlete: newAthlete, errors: errors.array(), title: `Edit Particulars - ${targetAthlete.fullName}`,
+        sports,
+        athlete: newAthlete,
+        errors: errors.array(),
+        title: `Edit Particulars - ${targetAthlete.fullName}`,
       });
     } else {
-      const updatedAthlete = await Athlete.findOneAndUpdate({ _id: req.params.id }, newAthlete);
+      const updatedAthlete = await Athlete.findOneAndUpdate(
+        { _id: req.params.id },
+        newAthlete,
+      );
       res.redirect(updatedAthlete.url);
     }
   }),
@@ -144,11 +152,15 @@ exports.editAthleteDetailsPOST = [
 
 exports.changeAthletePicGET = asyncHandler(async (req, res, next) => {
   const targetAthlete = await Athlete.findById(req.params.id);
-  res.render('./athletes/athlete-change-pic', { athlete: targetAthlete, title: `Change Picture - ${targetAthlete.fullName}` });
+  res.render('./athletes/athlete-change-pic', {
+    athlete: targetAthlete,
+    title: `Change Picture - ${targetAthlete.fullName}`,
+  });
 });
 
 exports.changeAthletePicPOST = [
-  body('password').equals(process.env.PASSWORD)
+  body('password')
+    .equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res, next) => {
@@ -188,10 +200,15 @@ exports.changeAthletePicPOST = [
     if (!errors.isEmpty()) {
       const targetAthlete = await Athlete.findById(req.params.id);
       res.render('./athletes/athlete-change-pic', {
-        athlete: newAthlete, errors: errors.array(), title: `Change Picture - ${targetAthlete.fullName}`,
+        athlete: newAthlete,
+        errors: errors.array(),
+        title: `Change Picture - ${targetAthlete.fullName}`,
       });
     } else {
-      const updatedAthlete = await Athlete.findOneAndUpdate({ _id: req.params.id }, newAthlete);
+      const updatedAthlete = await Athlete.findOneAndUpdate(
+        { _id: req.params.id },
+        newAthlete,
+      );
       res.redirect(updatedAthlete.url);
     }
   }),
@@ -203,7 +220,8 @@ exports.deleteAthleteGET = asyncHandler(async (req, res, next) => {
 });
 
 exports.deleteAthletePOST = [
-  body('password').equals(process.env.PASSWORD)
+  body('password')
+    .equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res, next) => {
@@ -211,7 +229,10 @@ exports.deleteAthletePOST = [
 
     const targetAthlete = await Athlete.findById(req.params.id);
     if (!errors.isEmpty()) {
-      res.render('./athletes/athlete-delete', { athlete: targetAthlete, errors: errors.array() });
+      res.render('./athletes/athlete-delete', {
+        athlete: targetAthlete,
+        errors: errors.array(),
+      });
     } else {
       await Athlete.findByIdAndDelete(req.params.id);
       res.redirect('/athletes');
