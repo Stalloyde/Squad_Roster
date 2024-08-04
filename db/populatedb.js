@@ -16,6 +16,14 @@ VALUES
 
 CREATE TABLE IF NOT EXISTS athletes (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  image_fieldname VARCHAR(255),
+  image_originalname VARCHAR(255),
+  image_encoding VARCHAR(50),
+  image_mimetype VARCHAR(100),
+  image_destination VARCHAR(255),
+  image_filename VARCHAR(255),
+  image_path VARCHAR(255),
+  image_size INTEGER,
   firstName VARCHAR ( 255 ) NOT NULL,
   lastName VARCHAR ( 255 ) NOT NULL,
   sex VARCHAR ( 6 ) NOT NULL,
@@ -99,120 +107,3 @@ async function main() {
 }
 
 main().catch((err) => console.log(err));
-
-// const sportArray = [];
-// const athletesArray = [];
-// const staffArray = [];
-
-// async function newSport(index, name) {
-//   const sport = new Sport({
-//     index,
-//     name,
-//   });
-//   sportArray[index] = sport;
-//   await sport.save();
-// }
-
-// async function createSports() {
-//   console.log('Creating sports');
-//   await Promise.all([newSport(0, 'Swimming'), newSport(1, 'Basketball')]);
-//   console.log('Sports created');
-// }
-
-// async function newAthlete(
-//   index,
-//   firstName,
-//   lastName,
-//   sex,
-//   height,
-//   weight,
-//   sport,
-//   dateOfBirth,
-// ) {
-//   const athlete = new Athlete({
-//     index,
-//     firstName,
-//     lastName,
-//     sex,
-//     height,
-//     weight,
-//     sport,
-//     dateOfBirth,
-//   });
-//   athletesArray[index] = athlete;
-//   await athlete.save();
-// }
-
-// async function createAthletes() {
-//   console.log('Creating Athletes');
-//   await Promise.all([newAthlete(0)]);
-//   console.log('Athletes created');
-// }
-
-// async function newStaff(index, firstName, lastName, designation, sport, bio) {
-//   const staff = new Staff({
-//     index,
-//     firstName,
-//     lastName,
-//     designation,
-//     sport,
-//     bio,
-//   });
-//   staffArray[index] = staff;
-//   await staff.save();
-// }
-
-// async function createStaff() {
-//   console.log('Creating Staff');
-//   await Promise.all([
-//     newStaff(
-//       0,
-//       'Thomas',
-//       'Clung',
-//       'Head Coach',
-//       sportArray[0],
-//       'Fake bio for Thomas Clung, Head Coach since 2004. Lead the swim team to numerous state titles and National top 10 rankings.',
-//     ),
-//     newStaff(
-//       1,
-//       'Jefferson',
-//       'Howard',
-//       'Assistant Head Coach',
-//       sportArray[0],
-//       'Started his career as a swim teacher and accumulated experience throughout his 20 year career.',
-//     ),
-//     newStaff(
-//       2,
-//       'Mandy',
-//       'Jensen',
-//       'Assistant Coach',
-//       sportArray[0],
-//       'Swam for the team for 10 years.',
-//     ),
-//     newStaff(
-//       3,
-//       'Mia',
-//       'Richards',
-//       'Head Coach',
-//       sportArray[1],
-//       'Turned to a coaching career since retiring from the WNBA in 2010. A great teacher and strong disciplinary, players rallying behind her leadership during difficult games are a common sight',
-//     ),
-//     newStaff(
-//       4,
-//       'Kurt',
-//       'SkyWalker',
-//       'Assistant Head Coach',
-//       sportArray[1],
-//       'The newest member of the Basketball coaching staff. Highly versatile in offensive and defensive schemes, as well as the key person in planning and delivering strength and conditioning.',
-//     ),
-//     newStaff(
-//       5,
-//       'Lea',
-//       'Cobin',
-//       'Assistant Coach',
-//       sportArray[1],
-//       'From a volunteer coach during the 2020-21 and 2021-22 season, she now leads the nutrition program.',
-//     ),
-//   ]);
-//   console.log('Staff created');
-// }

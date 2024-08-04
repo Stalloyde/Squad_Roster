@@ -3,20 +3,20 @@ extends ../layout
 block content
   main
     div.content-header
-      h2 Athlete Particulars - #{athlete.fullName}
+      h2 Athlete Particulars - #{athlete.fullname}
     br
     hr
     div.athlete-details-container
       section.details-container
         div.img-holder
-          if athlete.image.path
-            img.avatar(src=`/images/uploads/${athlete.image.filename}`)
+          if image_path
+            img.avatar(src=`/images/uploads/${image_filename}`)
           else 
             img.avatar(src='/images/avatar.png')
         div.athlete-details
           div 
             div.label #[strong Name]  
-            div : #{athlete.fullName}
+            div : #{athlete.fullname}
           div 
             div.label #[strong Sex]  
             div : #{athlete.sex}
@@ -30,11 +30,11 @@ block content
             div.label #[strong Sport] 
             div
               span : 
-                a(href=athlete.sport.url) #{athlete.sport.name}
+                a(href=athlete.sporturl) #{athlete.sportname}
           div 
             div.label #[strong Date of Birth] 
-            div : #{athlete.dateOfBirthFormatted}
+            div : #{athlete.dateofbirthformatted}
       div.crud-btn-container
-        a(href=`${athlete._id}/edit`): button.crud-btn EDIT PROFILE
-        a(href=`${athlete._id}/change-profile-pic`): button.crud-btn CHANGE PROFILE PICTURE
-        a(href=`${athlete._id}/delete`): button.del-btn.crud-btn DELETE PROFILE
+        a(href=`${athlete.id}/edit`): button.crud-btn EDIT PROFILE
+        a(href=`${athlete.id}/change-profile-pic`): button.crud-btn CHANGE PROFILE PICTURE
+        a(href=`${athlete.id}/delete`): button.del-btn.crud-btn DELETE PROFILE

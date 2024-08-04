@@ -1,21 +1,21 @@
 require('dotenv').config();
-const express = require('express');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const capitalise = require('./capitalise');
+const queries = require('../db/queries');
 
-exports.athletesDirectory = asyncHandler(async (req, res, next) => {
-  const athletes = await Athlete.find().populate('sport').sort({ lastName: 1 });
+exports.athletesDirectory = asyncHandler(async (req, res) => {
+  const athletes = await queries.getAllAthletesInfo();
   res.render('./athletes/athletes', { athletes });
 });
 
-exports.athleteDetails = asyncHandler(async (req, res, next) => {
-  const athlete = await Athlete.findById(req.params.id).populate('sport');
+exports.athleteDetails = asyncHandler(async (req, res) => {
+  const [athlete] = await queries.getAthleteDetails(req.params.id);
   res.render('./athletes/athlete-details', { athlete });
 });
 
-exports.newAthleteGET = asyncHandler(async (req, res, next) => {
-  const sports = await Sport.find().sort({ name: 1 });
+exports.newAthleteGET = asyncHandler(async (req, res) => {
+  const sports = await queries.getAllSports();
   res.render('./athletes/athlete-form', { sports });
 });
 
@@ -31,67 +31,25 @@ exports.newAthletePOST = [
     .equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
-  asyncHandler(async (req, res, next) => {
-    let newAthlete;
-    if (req.file) {
-      newAthlete = new Athlete({
-        image: {
-          fieldname: req.file.fieldname,
-          originalname: req.file.originalname,
-          encoding: req.file.encoding,
-          mimetype: req.file.mimetype,
-          destination: req.file.destination,
-          filename: req.file.filename,
-          path: req.file.path,
-          size: req.file.size,
-        },
-        firstName: capitalise(req.body.firstName),
-        lastName: capitalise(req.body.lastName),
-        sex: req.body.sex,
-        height: req.body.height,
-        weight: req.body.weight,
-        sport: req.body.sport,
-        dateOfBirth: req.body.dob,
-      });
-    } else {
-      newAthlete = new Athlete({
-        image: {
-          fieldname: null,
-          originalname: null,
-          encoding: null,
-          mimetype: null,
-          destination: null,
-          filename: null,
-          path: null,
-          size: null,
-        },
-        firstName: capitalise(req.body.firstName),
-        lastName: capitalise(req.body.lastName),
-        sex: req.body.sex,
-        height: req.body.height,
-        weight: req.body.weight,
-        sport: req.body.sport,
-        dateOfBirth: req.body.dob,
-      });
-    }
-
+  asyncHandler(async (req, res) => {
     const errors = validationResult(req);
+    const newAthlete = await queries.createNewAthlete(req);
+    const [athlete] = await queries.getAthleteDetails(newAthlete[0].id);
 
     if (!errors.isEmpty()) {
-      const sports = await Sport.find();
+      const sports = await queries.getAllSports();
       res.render('./athletes/athlete-form', {
         sports,
-        athlete: newAthlete,
+        athlete,
         errors: errors.array(),
       });
     } else {
-      await newAthlete.save();
-      res.redirect(newAthlete.url);
+      res.render('./athletes/athlete-details', { athlete });
     }
   }),
 ];
 
-exports.editAthleteDetailsGET = asyncHandler(async (req, res, next) => {
+exports.editAthleteDetailsGET = asyncHandler(async (req, res) => {
   const [sports, targetAthlete] = await Promise.all([
     Sport.find().sort({ name: 1 }),
     Athlete.findById(req.params.id).populate('sport'),
@@ -115,7 +73,7 @@ exports.editAthleteDetailsPOST = [
     .equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     const newAthlete = new Athlete({
       id: req.params.id,
       firstName: capitalise(req.body.firstName),
@@ -150,7 +108,7 @@ exports.editAthleteDetailsPOST = [
   }),
 ];
 
-exports.changeAthletePicGET = asyncHandler(async (req, res, next) => {
+exports.changeAthletePicGET = asyncHandler(async (req, res) => {
   const targetAthlete = await Athlete.findById(req.params.id);
   res.render('./athletes/athlete-change-pic', {
     athlete: targetAthlete,
@@ -163,7 +121,7 @@ exports.changeAthletePicPOST = [
     .equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     let newAthlete;
     if (req.file) {
       newAthlete = new Athlete({
@@ -214,8 +172,8 @@ exports.changeAthletePicPOST = [
   }),
 ];
 
-exports.deleteAthleteGET = asyncHandler(async (req, res, next) => {
-  const targetAthlete = await Athlete.findById(req.params.id);
+exports.deleteAthleteGET = asyncHandler(async (req, res) => {
+  const [targetAthlete] = await queries.getTargetAthlete(req.params.id);
   res.render('./athletes/athlete-delete', { athlete: targetAthlete });
 });
 
@@ -224,17 +182,16 @@ exports.deleteAthletePOST = [
     .equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     const errors = validationResult(req);
-
-    const targetAthlete = await Athlete.findById(req.params.id);
+    const [targetAthlete] = await queries.getTargetAthlete(req.params.id);
     if (!errors.isEmpty()) {
       res.render('./athletes/athlete-delete', {
         athlete: targetAthlete,
         errors: errors.array(),
       });
     } else {
-      await Athlete.findByIdAndDelete(req.params.id);
+      await queries.deleteAthlete(req.params.id);
       res.redirect('/athletes');
     }
   }),

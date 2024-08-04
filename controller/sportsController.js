@@ -1,11 +1,11 @@
 require('dotenv').config();
-const express = require('express');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const capitalise = require('./capitalise');
+const queries = require('../db/queries');
 
 exports.sportsDirectory = asyncHandler(async (req, res, next) => {
-  const sports = await Sport.find().sort({ name: 1 });
+  const sports = await queries.getAllSports();
   res.render('./sports/sports', { sports });
 });
 

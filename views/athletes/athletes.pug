@@ -21,11 +21,11 @@ block content
         for athlete,index in athletes 
           tr
             td.align-center #{index+1}
-            td: a(href=athlete.url) #{athlete.fullName}
+            td: a(href=athlete.url) #{athlete.fullname}
             td.align-center #{athlete.sex}
             td.align-center #{athlete.height}
             td.align-center #{athlete.weight}
-            td.align-center: a(href=athlete.sport.url) #{athlete.sport.name}
-            td.align-center #{athlete.dateOfBirthFormatted}
+            td.align-center: a(href=athlete.sporturl) #{athlete.sportname}
+            td.align-center #{athlete.dateofbirthformatted}
     else
       p There are no athletes in the database

@@ -3,7 +3,7 @@ extends ../layout
 block content
   main 
     div.content-header
-       h2 Delete Athlete - #{athlete.fullName}
+       h2 Delete Athlete - #{athlete.fullname}
     br
     hr
     section
@@ -17,4 +17,4 @@ block content
                 li.error-msg #{error.msg}
         div.crud-btn-container
           button(type='submit').crud-btn Delete Athlete
-          a(href=`/athletes/${athlete._id}`): button(type='button').del-btn.crud-btn Cancel
+          a(href=`/athletes/${athlete.id}`): button(type='button').del-btn.crud-btn Cancel

@@ -16,7 +16,7 @@ block content
             label(for='image') Upload Image (PNG, JPEG): 
             input(type='file' name='image' accept='image/png, image/jpeg, image/*')
           else 
-            if athlete.image.path
+            if athlete.image_path
               label(for='image') Upload Image (PNG, JPEG): 
               input(type='file' name='image' accept='image/png, image/jpeg, image/*')
           label(for='first-name') First Name: 
@@ -32,18 +32,18 @@ block content
               option(value='Male') Male 
               option(value='Female') Female 
           label(for='height') Height(cm) 
-          input#height(required type='number' name='height' value=(athlete===undefined? '': athlete.height))
+          input#height(required type='number' name='height' value=(athlete===undefined? '': athlete.height) max='300')
           label(for='weight') Weight(kg): 
-          input#weight(required type='number' name='weight' value=(athlete===undefined? '': athlete.weight))
+          input#weight(required type='number' name='weight' value=(athlete===undefined? '': athlete.weight) max='300')
           label(for='sport') Sport: 
           select#sport(name='sport')
             each sport in sports 
               if athlete
-                option(value=sport._id selected=(athlete.sport._id===sport._id? 'selected': '')) #{sport.name} 
+                option(value=sport.id selected=(athlete.sportname===sport.name? 'selected': '')) #{sport.name} 
               else 
-                option(value=sport._id) #{sport.name} 
+                option(value=sport.id) #{sport.name} 
           label(for='dob') Date of Birth: 
-          input#dob(required type='date' name='dob' value=(athlete === undefined? '': athlete.dateOfBirthForm))
+          input#dob(required type='date' name='dob' value=(athlete === undefined? '': athlete.dateOfBirthForm) max='2024-01-01')
           label(for='password') Password: 
           input#password(required type='password' name='password')
           if errors 
@@ -54,7 +54,7 @@ block content
           div.crud-btn-container
             button(type='submit').crud-btn Submit
             if title
-              a(href=`/athletes/${athlete._id}`): button(type='button').del-btn.crud-btn Cancel
+              a(href=`/athletes/${athlete.id}`): button(type='button').del-btn.crud-btn Cancel
             else 
               a(href=`/athletes`): button(type='button').del-btn.crud-btn Cancel
       else 
