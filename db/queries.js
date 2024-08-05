@@ -142,11 +142,71 @@ async function createNewAthlete(req) {
 async function getTargetAthlete(athleteId) {
   const { rows } = await pool.query(
     `SELECT 
-    CONCAT(firstName, ' ',lastName) AS fullname
+    id,
+    CONCAT(firstName, ' ',lastName) AS fullname,
+    firstName,
+    lastName,
+    sex,
+    height,
+    weight,
+    sport,
+    TO_CHAR(dateOfBirth, 'YYYY-MM-DD') dateofbirthformatted 
     FROM athletes WHERE id=$1`,
     [athleteId],
   );
   return rows;
+}
+
+async function editAthlete(req) {
+  if (req.file) {
+    await pool.query(
+      `UPDATE athletes
+      SET 
+      image_fieldname = $1,
+      image_originalname = $2,
+      image_encoding = $3,
+      image_mimetype = $4,
+      image_destination = $5,
+      image_filename = $6,
+      image_path = $7,
+      image_size = $8
+      WHERE id = $9`,
+      [
+        req.file.fieldname,
+        req.file.originalname,
+        req.file.encoding,
+        req.file.mimetype,
+        req.file.destination,
+        req.file.filename,
+        req.file.path,
+        req.file.size,
+        req.params.id,
+      ],
+    );
+  } else {
+    await pool.query(
+      `UPDATE athletes
+      SET 
+      firstname = $1,
+      lastname = $2,  
+      sex = $3,
+      height = $4,
+      weight = $5,
+      sport = $6,
+      dateofbirth = $7
+      WHERE id = $8`,
+      [
+        capitalise(req.body.firstName),
+        capitalise(req.body.lastName),
+        req.body.sex,
+        req.body.height,
+        req.body.weight,
+        req.body.sport,
+        req.body.dob,
+        req.params.id,
+      ],
+    );
+  }
 }
 
 async function deleteAthlete(athleteId) {
@@ -162,5 +222,6 @@ module.exports = {
   getAllSports,
   createNewAthlete,
   getTargetAthlete,
+  editAthlete,
   deleteAthlete,
 };

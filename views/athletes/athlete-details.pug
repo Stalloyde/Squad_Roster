@@ -9,8 +9,8 @@ block content
     div.athlete-details-container
       section.details-container
         div.img-holder
-          if image_path
-            img.avatar(src=`/images/uploads/${image_filename}`)
+          if athlete.image_path
+            img.avatar(src=`/images/uploads/${athlete.image_filename}`)
           else 
             img.avatar(src='/images/avatar.png')
         div.athlete-details

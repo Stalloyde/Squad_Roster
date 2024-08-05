@@ -11,6 +11,8 @@ exports.athletesDirectory = asyncHandler(async (req, res) => {
 
 exports.athleteDetails = asyncHandler(async (req, res) => {
   const [athlete] = await queries.getAthleteDetails(req.params.id);
+  console.log(athlete);
+
   res.render('./athletes/athlete-details', { athlete });
 });
 
@@ -50,14 +52,15 @@ exports.newAthletePOST = [
 ];
 
 exports.editAthleteDetailsGET = asyncHandler(async (req, res) => {
-  const [sports, targetAthlete] = await Promise.all([
-    Sport.find().sort({ name: 1 }),
-    Athlete.findById(req.params.id).populate('sport'),
+  const [sports, [targetAthlete]] = await Promise.all([
+    queries.getAllSports(),
+    queries.getTargetAthlete(req.params.id),
   ]);
+
   res.render('./athletes/athlete-form', {
     sports,
     athlete: targetAthlete,
-    title: `Edit Particulars - ${targetAthlete.fullName}`,
+    title: `Edit Particulars - ${targetAthlete.fullname}`,
   });
 });
 
@@ -74,45 +77,55 @@ exports.editAthleteDetailsPOST = [
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res) => {
-    const newAthlete = new Athlete({
+    const formatDateToYYYYMMDD = (date) => {
+      const d = new Date(date);
+      let month = `${d.getMonth() + 1}`;
+      let day = `${d.getDate()}`;
+      const year = d.getFullYear();
+
+      if (month.length < 2) month = `0${month}`;
+      if (day.length < 2) day = `0${day}`;
+
+      return [year, month, day].join('-');
+    };
+
+    const newAthlete = {
       id: req.params.id,
-      firstName: capitalise(req.body.firstName),
-      lastName: capitalise(req.body.lastName),
+      firstname: capitalise(req.body.firstName),
+      lastname: capitalise(req.body.lastName),
       sex: req.body.sex,
       height: req.body.height,
       weight: req.body.weight,
       sport: req.body.sport,
-      dateOfBirth: req.body.dob,
-    });
+      dateofbirthformatted: formatDateToYYYYMMDD(req.body.dob),
+    };
 
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) {
-      const [sports, targetAthlete] = await Promise.all([
-        Sport.find(),
-        Athlete.findById(req.params.id),
+      const [sports, [targetAthlete]] = await Promise.all([
+        queries.getAllSports(),
+        queries.getTargetAthlete(req.params.id),
       ]);
+
       res.render('./athletes/athlete-form', {
         sports,
         athlete: newAthlete,
         errors: errors.array(),
-        title: `Edit Particulars - ${targetAthlete.fullName}`,
+        title: `Edit Particulars - ${targetAthlete.fullname}`,
       });
     } else {
-      const updatedAthlete = await Athlete.findOneAndUpdate(
-        { _id: req.params.id },
-        newAthlete,
-      );
-      res.redirect(updatedAthlete.url);
+      await queries.editAthlete(req);
+      const athletes = await queries.getAllAthletesInfo();
+      res.render('./athletes/athletes', { athletes });
     }
   }),
 ];
 
 exports.changeAthletePicGET = asyncHandler(async (req, res) => {
-  const targetAthlete = await Athlete.findById(req.params.id);
+  const [targetAthlete] = await queries.getTargetAthlete(req.params.id);
   res.render('./athletes/athlete-change-pic', {
     athlete: targetAthlete,
-    title: `Change Picture - ${targetAthlete.fullName}`,
+    title: `Change Picture - ${targetAthlete.fullname}`,
   });
 });
 
@@ -124,50 +137,44 @@ exports.changeAthletePicPOST = [
   asyncHandler(async (req, res) => {
     let newAthlete;
     if (req.file) {
-      newAthlete = new Athlete({
-        image: {
-          fieldname: req.file.fieldname,
-          originalname: req.file.originalname,
-          encoding: req.file.encoding,
-          mimetype: req.file.mimetype,
-          destination: req.file.destination,
-          filename: req.file.filename,
-          path: req.file.path,
-          size: req.file.size,
-        },
-        id: req.params.id,
-      });
+      newAthlete = {
+        image_fieldname: req.file.fieldname,
+        image_originalname: req.file.originalname,
+        image_encoding: req.file.encoding,
+        image_mimetype: req.file.mimetype,
+        image_destination: req.file.destination,
+        image_filename: req.file.filename,
+        image_path: req.file.path,
+        image_size: req.file.size,
+      };
     } else {
-      newAthlete = new Athlete({
-        image: {
-          fieldname: null,
-          originalname: null,
-          encoding: null,
-          mimetype: null,
-          destination: null,
-          filename: null,
-          path: null,
-          size: null,
-        },
+      newAthlete = {
+        image_fieldname: null,
+        image_originalname: null,
+        image_encoding: null,
+        image_mimetype: null,
+        image_destination: null,
+        image_filename: null,
+        image_path: null,
+        image_size: null,
         id: req.params.id,
-      });
+      };
     }
 
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      const targetAthlete = await Athlete.findById(req.params.id);
+      const [targetAthlete] = await queries.getTargetAthlete(req.params.id);
+
       res.render('./athletes/athlete-change-pic', {
         athlete: newAthlete,
         errors: errors.array(),
-        title: `Change Picture - ${targetAthlete.fullName}`,
+        title: `Change Picture - ${targetAthlete.fullname}`,
       });
     } else {
-      const updatedAthlete = await Athlete.findOneAndUpdate(
-        { _id: req.params.id },
-        newAthlete,
-      );
-      res.redirect(updatedAthlete.url);
+      await queries.editAthlete(req);
+      const athletes = await queries.getAllAthletesInfo();
+      res.render('./athletes/athletes', { athletes });
     }
   }),
 ];
