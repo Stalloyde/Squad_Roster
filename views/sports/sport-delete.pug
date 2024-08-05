@@ -7,10 +7,10 @@ block content
     br
     hr
     section
-      if athletesInTargetSport.length > 0 || staffInTargetSport.length > 0
+      if sportAthletes.length > 0 || sportStaff.length > 0
         p Cannot delete sport as there are many staff and athletes in it. Please delete all staff and athletes connected to the sport and try again.
         br
-        a(href=`/sports/${sport._id}`) Return to '#{sport.name}'
+        a(href=`/sports/${sport.id}`) Return to '#{sport.name}'
       else
         form(method='POST')
           label(for='password') Password: 
@@ -22,4 +22,4 @@ block content
                   li.error-msg #{error.msg}
           div.crud-btn-container
             button(type='submit').crud-btn Delete Sport
-            a(href=`/sports/${sport._id}`): button(type='button').del-btn.crud-btn Cancel
+            a(href=`/sports/${sport.id}`): button(type='button').del-btn.crud-btn Cancel

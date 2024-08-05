@@ -11,8 +11,6 @@ exports.athletesDirectory = asyncHandler(async (req, res) => {
 
 exports.athleteDetails = asyncHandler(async (req, res) => {
   const [athlete] = await queries.getAthleteDetails(req.params.id);
-  console.log(athlete);
-
   res.render('./athletes/athlete-details', { athlete });
 });
 

@@ -4,24 +4,18 @@ const { body, validationResult } = require('express-validator');
 const capitalise = require('./capitalise');
 const queries = require('../db/queries');
 
-exports.sportsDirectory = asyncHandler(async (req, res, next) => {
+exports.sportsDirectory = asyncHandler(async (req, res) => {
   const sports = await queries.getAllSports();
   res.render('./sports/sports', { sports });
 });
 
-exports.sportDetails = asyncHandler(async (req, res, next) => {
-  const targetSport = req.params.id;
-  const [[sport], athletes, staffList] = await Promise.all([
-    Sport.find({ _id: targetSport }),
-    Athlete.find().populate('sport'),
-    Staff.find().populate('sport'),
+exports.sportDetails = asyncHandler(async (req, res) => {
+  const [[sport], sportAthletes, sportStaff] = await Promise.all([
+    queries.getSportDetails(req.params.id),
+    queries.getSportAthletes(req.params.id),
+    queries.getSportStaff(req.params.id),
   ]);
-  const sportAthletes = athletes
-    .filter((athlete) => athlete.sport.name === sport.name)
-    .sort((a, b) => (a.lastName < b.lastName ? -1 : 1));
-  const sportStaff = staffList
-    .filter((staff) => staff.sport.name === sport.name)
-    .sort((a, b) => (a.lastName < b.lastName ? -1 : 1));
+
   res.render('./sports/sport-details', {
     sport,
     athletes: sportAthletes,
@@ -29,9 +23,8 @@ exports.sportDetails = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.newSportGET = asyncHandler(async (req, res, next) => {
-  const sports = await Sport.find().sort({ name: 1 });
-  res.render('./sports/sport-form', { sports });
+exports.newSportGET = asyncHandler(async (req, res) => {
+  res.render('./sports/sport-form');
 });
 
 exports.newSportPOST = [
@@ -40,10 +33,10 @@ exports.newSportPOST = [
     .equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     const sportName = capitalise(req.body.sportName);
+    const newSport = { name: sportName };
 
-    const newSport = new Sport({ name: sportName });
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.render('./sports/sport-form', {
@@ -51,23 +44,24 @@ exports.newSportPOST = [
         errors: errors.array(),
       });
     } else {
-      const duplicateCheck = await Sport.find({ name: newSport.name });
-      if (duplicateCheck.length > 0) {
+      const [duplicateCheck] = await queries.checkDuplicateSport(sportName);
+      if (duplicateCheck) {
         res.render('./sports/sport-form', {
           sport: newSport,
           errors: errors.array(),
           duplicateError: `'${newSport.name}' already exists`,
         });
       } else {
-        await newSport.save();
-        res.redirect(newSport.url);
+        await queries.createNewSport(req);
+        const sports = await queries.getAllSports();
+        res.render('./sports/sports', { sports });
       }
     }
   }),
 ];
 
-exports.editSportGET = asyncHandler(async (req, res, next) => {
-  const [targetSport] = await Sport.find({ _id: req.params.id });
+exports.editSportGET = asyncHandler(async (req, res) => {
+  const [targetSport] = await queries.getTargetSport(req.params.id);
   res.render('./sports/sport-form', {
     sport: targetSport,
     title: `Edit Sport - ${targetSport.name}`,
@@ -80,10 +74,10 @@ exports.editSportPOST = [
     .equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
-  asyncHandler(async (req, res, next) => {
-    const [targetSport] = await Sport.find({ _id: req.params.id });
+  asyncHandler(async (req, res) => {
     const sportName = capitalise(req.body.sportName);
-    const newSport = new Sport({ _id: targetSport._id, name: sportName });
+    const [targetSport] = await queries.getTargetSport(req.params.id);
+    const newSport = { id: targetSport.id, name: sportName };
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -93,8 +87,8 @@ exports.editSportPOST = [
         title: `Edit Sport - ${targetSport.name}`,
       });
     } else {
-      const duplicateCheck = await Sport.find({ name: newSport.name });
-      if (duplicateCheck.length > 0) {
+      const [duplicateCheck] = await queries.checkDuplicateSport(sportName);
+      if (duplicateCheck) {
         res.render('./sports/sport-form', {
           sport: newSport,
           errors: errors.array(),
@@ -102,34 +96,25 @@ exports.editSportPOST = [
           duplicateError: `'${newSport.name}' already exists`,
         });
       } else {
-        const updatedSport = await Sport.findOneAndUpdate(
-          { _id: req.params.id },
-          newSport,
-        );
-        res.redirect(updatedSport.url);
+        await queries.editSport(req);
+        const sports = await queries.getAllSports();
+        res.render('./sports/sports', { sports });
       }
     }
   }),
 ];
 
-exports.deleteSportGET = asyncHandler(async (req, res, next) => {
-  const [targetSport, athletes, staffList] = await Promise.all([
-    Sport.findById(req.params.id),
-    Athlete.find().populate('sport'),
-    Staff.find().populate('sport'),
+exports.deleteSportGET = asyncHandler(async (req, res) => {
+  const [[sport], sportAthletes, sportStaff] = await Promise.all([
+    queries.getSportDetails(req.params.id),
+    queries.getSportAthletes(req.params.id),
+    queries.getSportStaff(req.params.id),
   ]);
-  const athletesInTargetSport = athletes.filter(
-    (athlete) => athlete.sport.name === targetSport.name,
-  );
-
-  const staffInTargetSport = staffList.filter(
-    (staff) => staff.sport.name === targetSport.name,
-  );
 
   res.render('./sports/sport-delete', {
-    sport: targetSport,
-    athletesInTargetSport,
-    staffInTargetSport,
+    sport,
+    sportAthletes,
+    sportStaff,
   });
 });
 
@@ -138,18 +123,25 @@ exports.deleteSportPOST = [
     .equals(process.env.PASSWORD)
     .withMessage('Password incorrect. Please try again.'),
 
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     const errors = validationResult(req);
-    const targetSport = await Sport.findById(req.params.id);
+    const [[targetSport], sportAthletes, sportStaff] = await Promise.all([
+      queries.getTargetSport(req.params.id),
+      queries.getSportAthletes(req.params.id),
+      queries.getSportStaff(req.params.id),
+    ]);
 
     if (!errors.isEmpty()) {
       res.render('./sports/sport-delete', {
         sport: targetSport,
+        sportAthletes,
+        sportStaff,
         errors: errors.array(),
       });
     } else {
-      await Sport.findByIdAndDelete(req.params.id);
-      res.redirect('/sports');
+      await queries.deleteSport(req.params.id);
+      const sports = await queries.getAllSports();
+      res.render('./sports/sports', { sports });
     }
   }),
 ];

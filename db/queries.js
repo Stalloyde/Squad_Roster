@@ -62,11 +62,6 @@ async function getAthleteDetails(athleteId) {
   return rows;
 }
 
-async function getAllSports() {
-  const { rows } = await pool.query('SELECT * FROM sports ORDER BY name');
-  return rows;
-}
-
 async function createNewAthlete(req) {
   if (req.file) {
     await pool.query(
@@ -213,15 +208,111 @@ async function deleteAthlete(athleteId) {
   await pool.query('DELETE FROM athletes WHERE id=$1', [athleteId]);
 }
 
+async function getAllSports() {
+  const { rows } = await pool.query(`SELECT *, 
+    CONCAT('/sports/', sports.id) AS url 
+    FROM sports ORDER BY name`);
+  return rows;
+}
+
+async function getSportDetails(sportId) {
+  const { rows } = await pool.query('SELECT * FROM sports WHERE id=$1', [
+    sportId,
+  ]);
+  return rows;
+}
+
+async function getSportAthletes(sportId) {
+  const { rows } = await pool.query(
+    `SELECT 
+    athletes.id,
+    CONCAT(firstName, ' ',lastName) AS fullname, 
+    sex, 
+    height, 
+    weight, 
+    sports.name AS sportname, 
+    CONCAT('/athletes/', athletes.id) AS url, 
+    TO_CHAR(dateOfBirth, 'DD Mon YYYY') dateofbirthformatted 
+    FROM athletes
+    JOIN sports
+    ON athletes.sport = sports.id
+    WHERE sport = $1
+    ORDER BY firstname`,
+    [sportId],
+  );
+  return rows;
+}
+
+async function getSportStaff(sportId) {
+  const { rows } = await pool.query(
+    `SELECT 
+    staff.id,
+    CONCAT(firstName, ' ',lastName) AS fullname, 
+    sports.name AS sportname, 
+    CONCAT('/staff/', staff.id) AS url,
+    designation
+    FROM staff
+    JOIN sports
+    ON staff.sport = sports.id
+    WHERE sport = $1
+    ORDER BY designation desc`,
+    [sportId],
+  );
+  return rows;
+}
+
+async function createNewSport(req) {
+  const { rows } = await pool.query('INSERT INTO sports (name) VALUES ($1)', [
+    capitalise(req.body.sportName),
+  ]);
+  return rows;
+}
+
+async function checkDuplicateSport(sportName) {
+  const { rows } = await pool.query('SELECT * from sports WHERE name = $1', [
+    capitalise(sportName),
+  ]);
+  return rows;
+}
+
+async function getTargetSport(sportId) {
+  const { rows } = await pool.query('SELECT * from sports WHERE id = $1', [
+    sportId,
+  ]);
+  return rows;
+}
+
+async function editSport(req) {
+  await pool.query(
+    `UPDATE sports
+      SET 
+      name = $1
+      WHERE id = $2`,
+    [capitalise(req.body.sportName), req.params.id],
+  );
+}
+
+async function deleteSport(sportId) {
+  await pool.query('DELETE FROM sports WHERE id=$1', [sportId]);
+}
+
 module.exports = {
   getAthleteCount,
   getSportCount,
   getStaffCount,
   getAllAthletesInfo,
   getAthleteDetails,
-  getAllSports,
   createNewAthlete,
   getTargetAthlete,
   editAthlete,
   deleteAthlete,
+  getAllSports,
+  getSportDetails,
+  getSportAthletes,
+  getSportStaff,
+  createNewSport,
+  checkDuplicateSport,
+  getTargetSport,
+  editSport,
+  deleteSport,
 };
