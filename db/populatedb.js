@@ -100,11 +100,11 @@ VALUES
 console.log('This script populates the database');
 
 async function main() {
+  const devConnectionString = `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@localhost:5432/${process.env.DATABASE}`;
+
   console.log('Connecting to DB');
   const client = new Client({
-    connectionString: `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@squad-roster-db.flycast`,
-    // ||
-    // `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@localhost:5432/${process.env.DATABASE}`,
+    connectionString: process.env.PROD_DB,
   });
   await client.connect();
   console.log('Connected to DB');

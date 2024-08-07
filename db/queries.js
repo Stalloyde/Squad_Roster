@@ -2,10 +2,10 @@ require('dotenv').config();
 const { Pool } = require('pg');
 const capitalise = require('../controller/capitalise');
 
+const devConnectionString = `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@localhost:5432/squad_roster`;
+
 const pool = new Pool({
-  connectionString: `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@squad-roster-db.flycast`,
-  // ||
-  // `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@localhost:5432/${process.env.DATABASE}`,
+  connectionString: process.env.PROD_DB,
 });
 
 async function getAthleteCount() {
