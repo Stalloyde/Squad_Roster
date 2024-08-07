@@ -102,7 +102,7 @@ console.log('This script populates the database');
 async function main() {
   console.log('Connecting to DB');
   const client = new Client({
-    connectionString: 'postgresql://squad-roster-db.flycast',
+    connectionString: `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@squad-roster-db.flycast`,
     // ||
     // `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@localhost:5432/${process.env.DATABASE}`,
   });

@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 const capitalise = require('../controller/capitalise');
 
 const pool = new Pool({
-  connectionString: 'postgresql://squad-roster-db.flycast',
+  connectionString: `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@squad-roster-db.flycast`,
   // ||
   // `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@localhost:5432/${process.env.DATABASE}`,
 });
