@@ -16,18 +16,22 @@ block content
             if !staff
               label(for='image') Upload Image (optional): 
               input(type='file' name='image' )
+            else 
+              if staff.image_path
+                label(for='image') Upload Image (optional): 
+                input(type='file' name='image' )
             label(for='first-name') First Name: 
-            input#staff-name(required type='text' name='firstName' value=(staff===undefined? '': staff.firstName))
+            input#staff-name(required type='text' name='firstname' value=(staff===undefined? '': staff.firstname))
             label(for='last-name') Last Name: 
-            input#last-name(required type='text' name='lastName' value=(staff===undefined? '': staff.lastName))
+            input#last-name(required type='text' name='lastname' value=(staff===undefined? '': staff.lastname))
             p.error-msg #{duplicateError}
             label(for='sport') Sport: 
               select#sport(name='sport')
                 each sport in sports 
                   if staff
-                    option(value=sport._id selected=(staff.sport._id===sport._id? 'selected': '')) #{sport.name} 
+                    option(value=sport.id selected=(staff.sport.id===sport.id? 'selected': '')) #{sport.name} 
                   else 
-                    option(value=sport._id) #{sport.name} 
+                    option(value=sport.id) #{sport.name} 
             label(for='designation') Designation: 
             input#designation(required type='text' name='designation' value=(staff===undefined? '': staff.designation))
             label(for='bio') bio: 
@@ -43,16 +47,16 @@ block content
               label(for='image') Upload Image (optional): 
               input(type='file' name='image' )
             label(for='first-name') First Name: 
-            input#staff-name(required type='text' name='firstName' value=(staff===undefined? '': staff.firstName))
+            input#staff-name(required type='text' name='firstname' value=(staff===undefined? '': staff.firstname))
             label(for='last-name') Last Name: 
-            input#last-name(required type='text' name='lastName' value=(staff===undefined? '': staff.lastName))
+            input#last-name(required type='text' name='lastname' value=(staff===undefined? '': staff.lastname))
             label(for='sport') Sport: 
               select#sport(name='sport')
                 each sport in sports 
                   if staff
-                    option(value=sport._id selected=(staff.sport._id===sport._id? 'selected': '')) #{sport.name} 
+                    option(value=sport.id selected=(staff.sport.id===sport.id? 'selected': '')) #{sport.name} 
                   else 
-                    option(value=sport._id) #{sport.name} 
+                    option(value=sport.id) #{sport.name} 
             label(for='designation') Designation: 
             input#designation(required type='text' name='designation' value=(staff===undefined? '': staff.designation))
             label(for='bio') Bio: 

@@ -24,14 +24,14 @@ async function getStaffCount() {
 async function getAllAthletesInfo() {
   const { rows } = await pool.query(
     `SELECT 
-    CONCAT(firstName, ' ',lastName) AS fullname, 
+    CONCAT(firstname, ' ',lastname) AS fullname, 
     CONCAT('/athletes/', athletes.id) AS url, 
     sex, 
     height, 
     weight, 
     sports.name AS sportname, 
     CONCAT('/sports/', sports.id) AS sporturl, 
-    TO_CHAR(dateOfBirth, 'DD Mon YYYY') dateofbirthformatted 
+    TO_CHAR(dateofbirth, 'DD Mon YYYY') dateofbirthformatted 
     FROM athletes 
     JOIN sports 
     ON athletes.sport=sports.id ORDER BY firstname`,
@@ -43,7 +43,7 @@ async function getAthleteDetails(athleteId) {
   const { rows } = await pool.query(
     `SELECT 
     athletes.id,
-    CONCAT(firstName, ' ',lastName) AS fullname, 
+    CONCAT(firstname, ' ',lastname) AS fullname, 
     image_path,
     image_filename,
     sex, 
@@ -51,7 +51,7 @@ async function getAthleteDetails(athleteId) {
     weight, 
     sports.name AS sportname, 
     CONCAT('/sports/', sports.id) AS sporturl, 
-    TO_CHAR(dateOfBirth, 'DD Mon YYYY') dateofbirthformatted
+    TO_CHAR(dateofbirth, 'DD Mon YYYY') dateofbirthformatted
     FROM athletes 
     JOIN sports 
     ON athletes.sport=sports.id 
@@ -74,13 +74,13 @@ async function createNewAthlete(req) {
         image_filename, 
         image_path,
         image_size,
-        firstName,
-        lastName,  
+        firstname,
+        lastname,  
         sex,
         height,
         weight,
         sport,
-        dateOfBirth)
+        dateofbirth)
         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
       [
         req.file.fieldname,
@@ -91,8 +91,8 @@ async function createNewAthlete(req) {
         req.file.filename,
         req.file.path,
         req.file.size,
-        capitalise(req.body.firstName),
-        capitalise(req.body.lastName),
+        capitalise(req.body.firstname),
+        capitalise(req.body.lastname),
         req.body.sex,
         req.body.height,
         req.body.weight,
@@ -101,24 +101,24 @@ async function createNewAthlete(req) {
       ],
     );
     const { rows } = await pool.query(
-      'SELECT * from athletes WHERE firstName = $1 AND lastName = $2',
-      [capitalise(req.body.firstName), capitalise(req.body.lastName)],
+      'SELECT * FROM athletes WHERE firstname = $1 AND lastname = $2',
+      [capitalise(req.body.firstname), capitalise(req.body.lastname)],
     );
     return rows;
   }
   await pool.query(
     `INSERT INTO athletes (
-        firstName,
-        lastName,  
+        firstname,
+        lastname,  
         sex,
         height,
         weight,
         sport,
-        dateOfBirth)
+        dateofbirth)
         VALUES ($1,$2,$3,$4,$5,$6,$7)`,
     [
-      capitalise(req.body.firstName),
-      capitalise(req.body.lastName),
+      capitalise(req.body.firstname),
+      capitalise(req.body.lastname),
       req.body.sex,
       req.body.height,
       req.body.weight,
@@ -128,8 +128,8 @@ async function createNewAthlete(req) {
   );
 
   const { rows } = await pool.query(
-    'SELECT * from athletes WHERE firstName = $1 AND lastName = $2',
-    [capitalise(req.body.firstName), capitalise(req.body.lastName)],
+    'SELECT * FROM athletes WHERE firstname = $1 AND lastname = $2',
+    [capitalise(req.body.firstname), capitalise(req.body.lastname)],
   );
   return rows;
 }
@@ -138,14 +138,14 @@ async function getTargetAthlete(athleteId) {
   const { rows } = await pool.query(
     `SELECT 
     id,
-    CONCAT(firstName, ' ',lastName) AS fullname,
-    firstName,
-    lastName,
+    CONCAT(firstname, ' ',lastname) AS fullname,
+    firstname,
+    lastname,
     sex,
     height,
     weight,
     sport,
-    TO_CHAR(dateOfBirth, 'YYYY-MM-DD') dateofbirthformatted 
+    TO_CHAR(dateofbirth, 'YYYY-MM-DD') dateofbirthformatted 
     FROM athletes WHERE id=$1`,
     [athleteId],
   );
@@ -191,8 +191,8 @@ async function editAthlete(req) {
       dateofbirth = $7
       WHERE id = $8`,
       [
-        capitalise(req.body.firstName),
-        capitalise(req.body.lastName),
+        capitalise(req.body.firstname),
+        capitalise(req.body.lastname),
         req.body.sex,
         req.body.height,
         req.body.weight,
@@ -208,7 +208,7 @@ async function deleteAthlete(athleteId) {
   await pool.query('DELETE FROM athletes WHERE id=$1', [athleteId]);
 }
 
-async function getAllSports() {
+async function getAllSportsInfo() {
   const { rows } = await pool.query(`SELECT *, 
     CONCAT('/sports/', sports.id) AS url 
     FROM sports ORDER BY name`);
@@ -226,13 +226,13 @@ async function getSportAthletes(sportId) {
   const { rows } = await pool.query(
     `SELECT 
     athletes.id,
-    CONCAT(firstName, ' ',lastName) AS fullname, 
+    CONCAT(firstname, ' ',lastname) AS fullname, 
     sex, 
     height, 
     weight, 
     sports.name AS sportname, 
     CONCAT('/athletes/', athletes.id) AS url, 
-    TO_CHAR(dateOfBirth, 'DD Mon YYYY') dateofbirthformatted 
+    TO_CHAR(dateofbirth, 'DD Mon YYYY') dateofbirthformatted 
     FROM athletes
     JOIN sports
     ON athletes.sport = sports.id
@@ -247,7 +247,7 @@ async function getSportStaff(sportId) {
   const { rows } = await pool.query(
     `SELECT 
     staff.id,
-    CONCAT(firstName, ' ',lastName) AS fullname, 
+    CONCAT(firstname, ' ',lastname) AS fullname, 
     sports.name AS sportname, 
     CONCAT('/staff/', staff.id) AS url,
     designation
@@ -269,14 +269,14 @@ async function createNewSport(req) {
 }
 
 async function checkDuplicateSport(sportName) {
-  const { rows } = await pool.query('SELECT * from sports WHERE name = $1', [
+  const { rows } = await pool.query('SELECT * FROM sports WHERE name = $1', [
     capitalise(sportName),
   ]);
   return rows;
 }
 
 async function getTargetSport(sportId) {
-  const { rows } = await pool.query('SELECT * from sports WHERE id = $1', [
+  const { rows } = await pool.query('SELECT * FROM sports WHERE id = $1', [
     sportId,
   ]);
   return rows;
@@ -296,6 +296,168 @@ async function deleteSport(sportId) {
   await pool.query('DELETE FROM sports WHERE id=$1', [sportId]);
 }
 
+async function getAllStaffInfo() {
+  const { rows } = await pool.query(
+    `SELECT 
+    CONCAT(firstname, ' ',lastname) AS fullname, 
+    CONCAT('/staff/', staff.id) AS url, 
+    sports.name AS sportname, 
+    CONCAT('/sports/', sports.id) AS sporturl,
+    designation
+    FROM staff
+    JOIN sports 
+    ON staff.sport=sports.id ORDER BY firstname`,
+  );
+  return rows;
+}
+
+async function getStaffDetails(staffId) {
+  const { rows } = await pool.query(
+    `SELECT 
+    staff.id,
+    CONCAT(firstname, ' ',lastname) AS fullname, 
+    image_path,
+    image_filename,
+    sports.name AS sportname, 
+    CONCAT('/sports/', sports.id) AS sporturl, 
+    designation,
+    bio
+    FROM staff 
+    JOIN sports 
+    ON staff.sport=sports.id 
+    WHERE staff.id = $1
+    ORDER BY firstname`,
+    [staffId],
+  );
+  return rows;
+}
+
+async function checkDuplicateStaff(firstname, lastname, sportId) {
+  const { rows } = await pool.query(
+    `SELECT * FROM staff
+    WHERE firstname = $1 AND lastname = $2 AND staff.sport = $3`,
+    [capitalise(firstname), capitalise(lastname), sportId],
+  );
+  return rows;
+}
+
+async function createNewStaff(req) {
+  if (req.file) {
+    await pool.query(
+      `INSERT INTO staff (
+        image_fieldname,
+        image_originalname,
+        image_encoding,
+        image_mimetype,
+        image_destination,
+        image_filename,
+        image_path,
+        image_size,
+        firstname,
+        lastname,
+        sport,
+        designation,
+        bio)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+      [
+        req.file.fieldname,
+        req.file.originalname,
+        req.file.encoding,
+        req.file.mimetype,
+        req.file.destination,
+        req.file.filename,
+        req.file.path,
+        req.file.size,
+        capitalise(req.body.firstname),
+        capitalise(req.body.lastname),
+        req.body.sport,
+        capitalise(req.body.designation),
+        capitalise(req.body.bio),
+      ],
+    );
+  } else {
+    await pool.query(
+      `INSERT INTO staff (
+        firstname,
+        lastname,
+        sport,
+        designation,
+        bio)
+        VALUES ($1,$2,$3,$4,$5)`,
+      [
+        capitalise(req.body.firstname),
+        capitalise(req.body.lastname),
+        req.body.sport,
+        capitalise(req.body.designation),
+        capitalise(req.body.bio),
+      ],
+    );
+  }
+}
+
+async function getTargetStaff(staffId) {
+  const { rows } = await pool.query(
+    `SELECT *,
+    id,
+    CONCAT(firstname, ' ',lastname) AS fullname 
+    FROM staff WHERE id = $1`,
+    [staffId],
+  );
+  return rows;
+}
+
+async function editStaff(req) {
+  if (req.file) {
+    await pool.query(
+      `UPDATE staff
+      SET 
+      image_fieldname = $1,
+      image_originalname = $2,
+      image_encoding = $3,
+      image_mimetype = $4,
+      image_destination = $5,
+      image_filename = $6,
+      image_path = $7,
+      image_size = $8
+      WHERE id = $9`,
+      [
+        req.file.fieldname,
+        req.file.originalname,
+        req.file.encoding,
+        req.file.mimetype,
+        req.file.destination,
+        req.file.filename,
+        req.file.path,
+        req.file.size,
+        req.params.id,
+      ],
+    );
+  } else {
+    await pool.query(
+      `UPDATE staff
+      SET 
+      firstname = $1,
+      lastname = $2,  
+      sport = $3,
+      designation = $4,
+      bio = $5
+      WHERE id = $6`,
+      [
+        capitalise(req.body.firstname),
+        capitalise(req.body.lastname),
+        req.body.sport,
+        req.body.designation,
+        req.body.bio,
+        req.params.id,
+      ],
+    );
+  }
+}
+
+async function deleteStaff(staffId) {
+  await pool.query('DELETE FROM staff WHERE id=$1', [staffId]);
+}
+
 module.exports = {
   getAthleteCount,
   getSportCount,
@@ -306,7 +468,7 @@ module.exports = {
   getTargetAthlete,
   editAthlete,
   deleteAthlete,
-  getAllSports,
+  getAllSportsInfo,
   getSportDetails,
   getSportAthletes,
   getSportStaff,
@@ -315,4 +477,11 @@ module.exports = {
   getTargetSport,
   editSport,
   deleteSport,
+  getAllStaffInfo,
+  getStaffDetails,
+  checkDuplicateStaff,
+  createNewStaff,
+  getTargetStaff,
+  editStaff,
+  deleteStaff,
 };

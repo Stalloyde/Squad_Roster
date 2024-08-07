@@ -3,25 +3,25 @@ extends ../layout
 block content
   main
     div.content-header
-      h2 Staff Particulars - #{staff.fullName}
+      h2 Staff Particulars - #{staff.fullname}
     br
     hr
     div.staff-details-container
       section.details-container
         div.img-holder
-          if staff.image.path
-            img.avatar(src=`/images/uploads/${staff.image.filename}`)
+          if staff.image_path
+            img.avatar(src=`/images/uploads/${staff.image_filename}`)
           else 
             img.avatar(src='/images/avatar.png')
         div.staff-details
           div 
             div.label #[strong Name]  
-            div : #{staff.fullName}
+            div : #{staff.fullname}
           div 
             div.label #[strong Sport] 
             div
               span : 
-                a(href=staff.sport.url) #{staff.sport.name}
+                a(href=staff.sporturl) #{staff.sportname}
           div 
             div.label #[strong Designation] 
             div : #{staff.designation}
@@ -29,6 +29,6 @@ block content
             div.label #[strong Bio] 
             div : #{staff.bio}
       div.crud-btn-container
-        a(href=`${staff._id}/edit`): button.crud-btn EDIT PROFILE
-        a(href=`${staff._id}/change-profile-pic`): button.crud-btn CHANGE PROFILE PICTURE
-        a(href=`${staff._id}/delete`): button.del-btn.crud-btn DELETE PROFILE
+        a(href=`${staff.id}/edit`): button.crud-btn EDIT PROFILE
+        a(href=`${staff.id}/change-profile-pic`): button.crud-btn CHANGE PROFILE PICTURE
+        a(href=`${staff.id}/delete`): button.del-btn.crud-btn DELETE PROFILE

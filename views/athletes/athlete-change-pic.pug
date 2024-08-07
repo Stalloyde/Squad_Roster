@@ -20,6 +20,6 @@ block content
         div.crud-btn-container
           button(type='submit').crud-btn Submit
           if title
-            a(href=`/athletes/${athlete._id}`): button(type='button').del-btn.crud-btn Cancel
+            a(href=`/athletes/${athlete.id}`): button(type='button').del-btn.crud-btn Cancel
           else 
             a(href=`/athletes`): button(type='button').del-btn.crud-btn Cancel

@@ -5,7 +5,7 @@ const capitalise = require('./capitalise');
 const queries = require('../db/queries');
 
 exports.sportsDirectory = asyncHandler(async (req, res) => {
-  const sports = await queries.getAllSports();
+  const sports = await queries.getAllSportsInfo();
   res.render('./sports/sports', { sports });
 });
 
@@ -53,7 +53,7 @@ exports.newSportPOST = [
         });
       } else {
         await queries.createNewSport(req);
-        const sports = await queries.getAllSports();
+        const sports = await queries.getAllSportsInfo();
         res.render('./sports/sports', { sports });
       }
     }
@@ -97,7 +97,7 @@ exports.editSportPOST = [
         });
       } else {
         await queries.editSport(req);
-        const sports = await queries.getAllSports();
+        const sports = await queries.getAllSportsInfo();
         res.render('./sports/sports', { sports });
       }
     }
@@ -140,7 +140,7 @@ exports.deleteSportPOST = [
       });
     } else {
       await queries.deleteSport(req.params.id);
-      const sports = await queries.getAllSports();
+      const sports = await queries.getAllSportsInfo();
       res.render('./sports/sports', { sports });
     }
   }),

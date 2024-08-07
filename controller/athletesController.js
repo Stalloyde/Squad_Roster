@@ -4,6 +4,18 @@ const { body, validationResult } = require('express-validator');
 const capitalise = require('./capitalise');
 const queries = require('../db/queries');
 
+const formatDateToYYYYMMDD = (date) => {
+  const d = new Date(date);
+  let month = `${d.getMonth() + 1}`;
+  let day = `${d.getDate()}`;
+  const year = d.getFullYear();
+
+  if (month.length < 2) month = `0${month}`;
+  if (day.length < 2) day = `0${day}`;
+
+  return [year, month, day].join('-');
+};
+
 exports.athletesDirectory = asyncHandler(async (req, res) => {
   const athletes = await queries.getAllAthletesInfo();
   res.render('./athletes/athletes', { athletes });
@@ -15,13 +27,13 @@ exports.athleteDetails = asyncHandler(async (req, res) => {
 });
 
 exports.newAthleteGET = asyncHandler(async (req, res) => {
-  const sports = await queries.getAllSports();
+  const sports = await queries.getAllSportsInfo();
   res.render('./athletes/athlete-form', { sports });
 });
 
 exports.newAthletePOST = [
-  body('firstName').trim().escape(),
-  body('lastName').trim().escape(),
+  body('firstname').trim().escape(),
+  body('lastname').trim().escape(),
   body('sex.*').escape(),
   body('height').isNumeric().escape(),
   body('weight').isNumeric().escape(),
@@ -32,26 +44,65 @@ exports.newAthletePOST = [
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res) => {
-    const errors = validationResult(req);
-    const newAthlete = await queries.createNewAthlete(req);
-    const [athlete] = await queries.getAthleteDetails(newAthlete[0].id);
+    let newAthlete;
+    if (req.file) {
+      newAthlete = {
+        image_fieldname: req.file.fieldname,
+        image_originalname: req.file.originalname,
+        image_encoding: req.file.encoding,
+        image_mimetype: req.file.mimetype,
+        image_destination: req.file.destination,
+        image_filename: req.file.filename,
+        image_path: req.file.path,
+        image_size: req.file.size,
+        id: req.params.id,
+        firstname: capitalise(req.body.firstname),
+        lastname: capitalise(req.body.lastname),
+        sex: req.body.sex,
+        height: req.body.height,
+        weight: req.body.weight,
+        sport: req.body.sport,
+        dateofbirthformatted: formatDateToYYYYMMDD(req.body.dob),
+      };
+    } else {
+      newAthlete = {
+        image_fieldname: null,
+        image_originalname: null,
+        image_encoding: null,
+        image_mimetype: null,
+        image_destination: null,
+        image_filename: null,
+        image_path: null,
+        image_size: null,
+        firstname: capitalise(req.body.firstname),
+        lastname: capitalise(req.body.lastname),
+        sex: req.body.sex,
+        height: req.body.height,
+        weight: req.body.weight,
+        sport: req.body.sport,
+        dateofbirthformatted: formatDateToYYYYMMDD(req.body.dob),
+      };
+    }
 
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const sports = await queries.getAllSports();
+      const sports = await queries.getAllSportsInfo();
       res.render('./athletes/athlete-form', {
         sports,
-        athlete,
+        athlete: newAthlete,
         errors: errors.array(),
       });
     } else {
-      res.render('./athletes/athlete-details', { athlete });
+      await queries.createNewAthlete(req);
+      const athletes = await queries.getAllAthletesInfo();
+      res.render('./athletes/athletes', { athletes });
     }
   }),
 ];
 
 exports.editAthleteDetailsGET = asyncHandler(async (req, res) => {
   const [sports, [targetAthlete]] = await Promise.all([
-    queries.getAllSports(),
+    queries.getAllSportsInfo(),
     queries.getTargetAthlete(req.params.id),
   ]);
 
@@ -63,8 +114,8 @@ exports.editAthleteDetailsGET = asyncHandler(async (req, res) => {
 });
 
 exports.editAthleteDetailsPOST = [
-  body('firstName').trim().escape(),
-  body('lastName').trim().escape(),
+  body('firstname').trim().escape(),
+  body('lastname').trim().escape(),
   body('sex.*').escape(),
   body('height').isNumeric().escape(),
   body('weight').isNumeric().escape(),
@@ -75,22 +126,10 @@ exports.editAthleteDetailsPOST = [
     .withMessage('Password incorrect. Please try again.'),
 
   asyncHandler(async (req, res) => {
-    const formatDateToYYYYMMDD = (date) => {
-      const d = new Date(date);
-      let month = `${d.getMonth() + 1}`;
-      let day = `${d.getDate()}`;
-      const year = d.getFullYear();
-
-      if (month.length < 2) month = `0${month}`;
-      if (day.length < 2) day = `0${day}`;
-
-      return [year, month, day].join('-');
-    };
-
     const newAthlete = {
       id: req.params.id,
-      firstname: capitalise(req.body.firstName),
-      lastname: capitalise(req.body.lastName),
+      firstname: capitalise(req.body.firstname),
+      lastname: capitalise(req.body.lastname),
       sex: req.body.sex,
       height: req.body.height,
       weight: req.body.weight,
@@ -101,7 +140,7 @@ exports.editAthleteDetailsPOST = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const [sports, [targetAthlete]] = await Promise.all([
-        queries.getAllSports(),
+        queries.getAllSportsInfo(),
         queries.getTargetAthlete(req.params.id),
       ]);
 

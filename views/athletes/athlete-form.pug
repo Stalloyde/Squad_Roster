@@ -20,9 +20,9 @@ block content
               label(for='image') Upload Image (PNG, JPEG): 
               input(type='file' name='image' accept='image/png, image/jpeg, image/*')
           label(for='first-name') First Name: 
-          input#first-name(required type='text' name='firstName' value=(athlete===undefined? '': athlete.firstname))
+          input#first-name(required type='text' name='firstname' value=(athlete===undefined? '': athlete.firstname))
           label(for='last-name') Last Name: 
-          input#last-name(required type='text' name='lastName' value=(athlete===undefined? '': athlete.lastname))
+          input#last-name(required type='text' name='lastname' value=(athlete===undefined? '': athlete.lastname))
           label(for='sex') Sex: 
           select#sex(name='sex')
             if athlete 

@@ -18,8 +18,8 @@ block content
         for staff,index in staffList 
           tr
             td.align-center #{index+1}
-            td: a(href=staff.url) #{staff.fullName}
-            td.align-center: a(href=staff.sport.url) #{staff.sport.name}
+            td: a(href=staff.url) #{staff.fullname}
+            td.align-center: a(href=staff.sporturl) #{staff.sportname}
             td #{staff.designation}
     else 
       p There are no staff in the database

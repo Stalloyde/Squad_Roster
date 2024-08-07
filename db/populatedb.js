@@ -71,6 +71,14 @@ VALUES
 
 CREATE TABLE IF NOT EXISTS staff (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  image_fieldname VARCHAR(255),
+  image_originalname VARCHAR(255),
+  image_encoding VARCHAR(50),
+  image_mimetype VARCHAR(100),
+  image_destination VARCHAR(255),
+  image_filename VARCHAR(255),
+  image_path VARCHAR(255),
+  image_size INTEGER,
   firstName VARCHAR ( 255 ) NOT NULL,
   lastName VARCHAR ( 255 ) NOT NULL,
   designation VARCHAR (255) NOT NULL,
