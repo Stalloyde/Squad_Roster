@@ -3,7 +3,9 @@ const { Pool } = require('pg');
 const capitalise = require('../controller/capitalise');
 
 const pool = new Pool({
-  connectionString: `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@localhost:5432/${process.env.DATABASE}`,
+  connectionString:
+    `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@localhost:5432/${process.env.DATABASE}` ||
+    process.env.PROD_DB,
 });
 
 async function getAthleteCount() {
