@@ -104,7 +104,7 @@ async function main() {
 
   console.log('Connecting to DB');
   const client = new Client({
-    connectionString: process.env.PROD_DB,
+    connectionString: process.env.PRODUCTION_DB || devConnectionString,
   });
   await client.connect();
   console.log('Connected to DB');

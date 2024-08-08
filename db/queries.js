@@ -2,14 +2,13 @@ require('dotenv').config();
 const { Pool } = require('pg');
 const capitalise = require('../controller/capitalise');
 
-// const devConnectionString = `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@localhost:5432/squad_roster`;
+const devConnectionString = `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@localhost:5432/squad_roster`;
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.PRODUCTION_DB || devConnectionString,
 });
 
 async function getAthleteCount() {
-  console.log(process.env.DATABASE_URL);
   const { rows } = await pool.query('SELECT count(*) FROM athletes');
   return rows;
 }
