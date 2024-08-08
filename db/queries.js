@@ -8,6 +8,8 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
+console.log(process.env.DATABASE_URL);
+
 async function getAthleteCount() {
   const { rows } = await pool.query('SELECT count(*) FROM athletes');
   return rows;
