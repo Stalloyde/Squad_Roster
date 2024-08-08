@@ -5,7 +5,7 @@ const capitalise = require('../controller/capitalise');
 // const devConnectionString = `postgresql://${process.env.USERNAME}:${process.env.PASSWORD}@localhost:5432/squad_roster`;
 
 const pool = new Pool({
-  connectionString: process.env.PROD_DB,
+  connectionString: process.env.DATABASE_URL,
 });
 
 async function getAthleteCount() {
